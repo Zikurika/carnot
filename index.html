@@ -1,1327 +1,564 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carnot Registry - Centre Léon Bérard</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --clb-rose: #c4165a;
-            --clb-rose-light: #d63d73;
-            --clb-rose-dark: #9a0d46;
-            --clb-blue: #003d82;
-            --clb-blue-light: #0066cc;
-            --clb-blue-pale: #e8f0ff;
-            --clb-gray: #f5f5f5;
-            --clb-dark: #2c2c2c;
-            --clb-border: #e0e0e0;
-            --clb-success: #27ae60;
-            --clb-error: #c0392b;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #ffffff;
-            min-height: 100vh;
-            color: var(--clb-dark);
-            line-height: 1.6;
-        }
-
-        /* NAVBAR */
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            border-bottom: 1px solid var(--clb-border);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            z-index: 1000;
-        }
-
-        .navbar-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 12px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .navbar-brand {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            flex: 1;
-        }
-
-        .navbar-logo {
-            width: 120px;
-            height: auto;
-            max-width: 100%;
-        }
-
-        .navbar-logo img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        .navbar-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--clb-blue);
-            letter-spacing: -0.5px;
-        }
-
-        .navbar-menu {
-            display: flex;
-            gap: 35px;
-            align-items: center;
-        }
-
-        .navbar-menu a {
-            color: var(--clb-dark);
-            cursor: pointer;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 14px;
-            transition: color 0.3s ease;
-            padding: 8px 0;
-            border-bottom: 2px solid transparent;
-        }
-
-        .navbar-menu a:hover {
-            color: var(--clb-rose);
-            border-bottom-color: var(--clb-rose);
-        }
-
-        .navbar-user {
-            font-size: 13px;
-            color: var(--clb-blue);
-            font-weight: 600;
-            padding: 8px 16px;
-            background: var(--clb-blue-pale);
-            border-radius: 20px;
-            border: 1px solid var(--clb-blue-light);
-        }
-
-        .navbar-logout {
-            background: var(--clb-rose);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 13px;
-            transition: background 0.3s ease;
-        }
-
-        .navbar-logout:hover {
-            background: var(--clb-rose-dark);
-        }
-
-        /* CONTAINER */
-        .container {
-            max-width: 800px;
-            width: 100%;
-            margin: 100px auto 40px;
-            padding: 0 20px;
-        }
-
-        .page {
-            display: none;
-        }
- 
-        .page.active {
-            display: block;
-            animation: fadeIn 0.4s ease-in;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(15px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* CARD */
-        .card {
-            background: white;
-            border-radius: 12px;
-            border: 1px solid var(--clb-border);
-            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-            padding: 50px;
-            margin-bottom: 30px;
-            transition: box-shadow 0.3s ease, border-color 0.3s ease;
-        }
-
-        .card:hover {
-            box-shadow: 0 4px 20px rgba(196, 22, 90, 0.08);
-            border-color: var(--clb-rose);
-        }
-
-        .card-header {
-            margin-bottom: 35px;
-            text-align: center;
-        }
-
-        h1 {
-            font-size: 34px;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--clb-blue) 0%, var(--clb-rose) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 12px;
-        }
-
-        .subtitle {
-            color: #666;
-            font-size: 15px;
-            font-weight: 400;
-        }
-
-        /* FORM GROUPS */
-        .form-group {
-            margin-bottom: 26px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: 600;
-            color: var(--clb-dark);
-            font-size: 14px;
-        }
-
-        .form-group small {
-            color: #999;
-            font-size: 12px;
-            display: block;
-            margin-top: 6px;
-        }
-
-        input[type="text"],
-        input[type="email"],
-        input[type="password"],
-        input[type="number"],
-        input[type="date"],
-        select,
-        textarea {
-            width: 100%;
-            padding: 13px 16px;
-            border: 1.5px solid var(--clb-border);
-            border-radius: 8px;
-            font-size: 14px;
-            font-family: 'Inter', inherit;
-            background: white;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        input:focus,
-        select:focus,
-        textarea:focus {
-            outline: none;
-            border-color: var(--clb-rose);
-            box-shadow: 0 0 0 4px rgba(196, 22, 90, 0.08);
-        }
-
-        select {
-            cursor: pointer;
-            appearance: none;
-            padding-right: 40px;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23c4165a' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 16px center;
-            padding-right: 40px;
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 110px;
-        }
-
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        @media (max-width: 768px) {
-            .grid-2 {
-                grid-template-columns: 1fr;
-            }
-
-            .card {
-                padding: 30px 20px;
-            }
-
-            h1 {
-                font-size: 26px;
-            }
-
-            .navbar-container {
-                padding: 12px 20px;
-            }
-
-            .navbar-brand {
-                gap: 12px;
-            }
-
-            .navbar-menu {
-                gap: 15px;
-            }
-        }
-
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 14px 16px;
-            background: var(--clb-blue-pale);
-            border-radius: 8px;
-            border: 1.5px solid var(--clb-blue-light);
-        }
-
-        input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            accent-color: var(--clb-rose);
-        }
-
-        .checkbox-group label {
-            margin: 0;
-            cursor: pointer;
-            font-weight: 500;
-        }
-
-        /* BUTTONS */
-        button {
-            width: 100%;
-            padding: 14px 28px;
-            background: linear-gradient(135deg, var(--clb-rose) 0%, var(--clb-rose-light) 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(196, 22, 90, 0.25);
-        }
-
-        button:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(196, 22, 90, 0.35);
-        }
-
-        button:active:not(:disabled) {
-            transform: translateY(0);
-        }
-
-        button:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
-
-        /* SECTION HEADERS */
-        .section-header {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--clb-blue);
-            margin-top: 35px;
-            margin-bottom: 22px;
-            padding-bottom: 14px;
-            border-bottom: 2px solid var(--clb-rose);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* ALERTS */
-        .alert {
-            padding: 16px 20px;
-            border-radius: 8px;
-            margin-bottom: 22px;
-            font-size: 14px;
-            border-left: 4px solid;
-            animation: slideDown 0.4s ease;
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .alert-error {
-            background: #fef0f2;
-            color: var(--clb-error);
-            border-left-color: var(--clb-error);
-        }
-
-        .alert-success {
-            background: #f0fdf4;
-            color: var(--clb-success);
-            border-left-color: var(--clb-success);
-        }
-
-        /* CODE BOX */
-        .code-box {
-            background: linear-gradient(135deg, var(--clb-blue-pale) 0%, #f0f8ff 100%);
-            border: 2px solid var(--clb-rose);
-            padding: 35px;
-            border-radius: 12px;
-            text-align: center;
-            margin-top: 30px;
-            animation: slideDown 0.5s ease;
-        }
-
-        .code-box h3 {
-            color: var(--clb-blue);
-            margin-bottom: 18px;
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            font-weight: 700;
-        }
-
-        .code-box .code {
-            font-size: 48px;
-            font-weight: 800;
-            color: var(--clb-rose);
-            font-family: 'Monaco', 'Courier New', monospace;
-            letter-spacing: 3px;
-        }
-
-        /* TABLE */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th {
-            background: linear-gradient(180deg, var(--clb-blue-pale) 0%, #f0f4ff 100%);
-            padding: 16px;
-            text-align: left;
-            font-weight: 700;
-            color: var(--clb-blue);
-            border-bottom: 2px solid var(--clb-rose);
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        td {
-            padding: 15px 16px;
-            border-bottom: 1px solid var(--clb-border);
-            font-size: 14px;
-        }
-
-        tr:hover {
-            background: var(--clb-gray);
-        }
-
-        /* LINKS */
-        .link {
-            color: var(--clb-rose);
-            cursor: pointer;
-            text-decoration: none;
-            font-weight: 700;
-            transition: color 0.3s ease;
-            border-bottom: 2px dotted var(--clb-rose);
-        }
-
-        .link:hover {
-            color: var(--clb-rose-dark);
-        }
-
-        /* AUTH LINKS */
-        .auth-links {
-            margin-top: 28px;
-            padding-top: 22px;
-            border-top: 1px solid var(--clb-border);
-            text-align: center;
-            color: #666;
-            font-size: 14px;
-        }
-
-        .auth-links .link {
-            margin: 0 4px;
-        }
-
-        /* EMPTY STATE */
-        .empty-state {
-            text-align: center;
-            padding: 70px 20px;
-            color: #999;
-        }
-
-        .empty-state-icon {
-            font-size: 56px;
-            margin-bottom: 25px;
-        }
-
-        .empty-state p {
-            font-size: 16px;
-            margin-bottom: 28px;
-        }
-
-        /* FOOTER */
-        .footer {
-            margin-top: 80px;
-            padding: 40px 20px;
-            text-align: center;
-            color: #999;
-            font-size: 12px;
-            border-top: 2px solid var(--clb-rose);
-            background: var(--clb-gray);
-        }
-
-        .footer-logo {
-            font-size: 28px;
-            margin-bottom: 15px;
-        }
-
-        /* BADGE */
-        .badge {
-            display: inline-block;
-            padding: 6px 14px;
-            background: linear-gradient(135deg, var(--clb-rose) 0%, var(--clb-rose-light) 100%);
-            color: white;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
-            box-shadow: 0 2px 8px rgba(196, 22, 90, 0.2);
-        }
-
-        .table-wrapper {
-            overflow-x: auto;
-            border-radius: 8px;
-            border: 1px solid var(--clb-border);
-        }
-
-        .admin-stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr;
-            gap: 18px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, var(--clb-blue) 0%, var(--clb-rose) 100%);
-            color: white;
-            padding: 25px;
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(196, 22, 90, 0.2);
-        }
-
-        .stat-card .stat-value {
-            font-size: 32px;
-            font-weight: 800;
-            margin-bottom: 8px;
-        }
-
-        .stat-card .stat-label {
-            font-size: 12px;
-            opacity: 0.95;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .admin-filters {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 18px;
-            margin-bottom: 25px;
-        }
-
-        .filter-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .filter-group label {
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--clb-blue);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .filter-group input,
-        .filter-group select {
-            padding: 10px 14px;
-            border: 1.5px solid var(--clb-border);
-            border-radius: 6px;
-            font-size: 13px;
-            transition: border-color 0.3s ease;
-        }
-
-        .filter-group input:focus,
-        .filter-group select:focus {
-            border-color: var(--clb-rose);
-        }
-
-        .export-btn {
-            background: linear-gradient(135deg, var(--clb-success) 0%, #229954 100%);
-            padding: 12px 24px;
-            width: auto;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.25);
-        }
-
-        .export-btn:hover {
-            box-shadow: 0 6px 20px rgba(39, 174, 96, 0.35);
-        }
-
-        @media (max-width: 1200px) {
-            .admin-filters,
-            .admin-stats {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .admin-filters,
-            .admin-stats {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Générateur Code Carnot - Centre Léon Bérard</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    :root{
+      --clb-rose:#c4165a;
+      --clb-rose-light:#d63d73;
+      --clb-rose-dark:#9a0d46;
+      --clb-blue:#003d82;
+      --clb-blue-light:#0066cc;
+      --clb-blue-pale:#e8f0ff;
+      --clb-gray:#f5f5f5;
+      --clb-dark:#2c2c2c;
+      --clb-border:#e0e0e0;
+      --clb-success:#27ae60;
+      --clb-error:#c0392b;
+    }
+
+    body{
+      font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background:#fff;
+      min-height:100vh;
+      color:var(--clb-dark);
+      line-height:1.6;
+    }
+
+    /* NAVBAR */
+    .navbar{
+      position:fixed; top:0; left:0; right:0;
+      background:white;
+      border-bottom:1px solid var(--clb-border);
+      box-shadow:0 2px 8px rgba(0,0,0,0.05);
+      z-index:1000;
+    }
+    .navbar-container{
+      max-width:1100px;
+      margin:0 auto;
+      padding:12px 20px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:16px;
+    }
+    .navbar-brand{
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
+    .navbar-logo{ width:120px; height:auto; }
+    .navbar-logo img{ width:100%; height:auto; display:block; }
+    .navbar-title{
+      font-size:18px;
+      font-weight:800;
+      color:var(--clb-blue);
+      letter-spacing:-0.4px;
+      white-space:nowrap;
+    }
+
+    /* CONTAINER */
+    .container{
+      max-width:800px;
+      width:100%;
+      margin:100px auto 40px;
+      padding:0 20px;
+    }
+
+    /* CARD */
+    .card{
+      background:white;
+      border-radius:12px;
+      border:1px solid var(--clb-border);
+      box-shadow:0 2px 12px rgba(0,0,0,0.06);
+      padding:48px;
+      transition:box-shadow .3s ease, border-color .3s ease;
+    }
+    .card:hover{
+      box-shadow:0 4px 20px rgba(196,22,90,0.08);
+      border-color:var(--clb-rose);
+    }
+    .card-header{
+      margin-bottom:30px;
+      text-align:center;
+    }
+    h1{
+      font-size:32px;
+      font-weight:800;
+      background:linear-gradient(135deg, var(--clb-blue) 0%, var(--clb-rose) 100%);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text;
+      margin-bottom:10px;
+    }
+    .subtitle{ color:#666; font-size:14px; font-weight:400; }
+
+    /* FORM */
+    .form-group{ margin-bottom:22px; }
+    .form-group label{
+      display:block;
+      margin-bottom:10px;
+      font-weight:700;
+      color:var(--clb-dark);
+      font-size:14px;
+    }
+    .form-group small{
+      color:#999;
+      font-size:12px;
+      display:block;
+      margin-top:6px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    select,
+    textarea{
+      width:100%;
+      padding:13px 16px;
+      border:1.5px solid var(--clb-border);
+      border-radius:8px;
+      font-size:14px;
+      font-family:'Inter', inherit;
+      background:white;
+      transition:border-color .3s ease, box-shadow .3s ease;
+    }
+    input:focus, select:focus, textarea:focus{
+      outline:none;
+      border-color:var(--clb-rose);
+      box-shadow:0 0 0 4px rgba(196,22,90,0.08);
+    }
+    select{
+      cursor:pointer;
+      appearance:none;
+      padding-right:40px;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23c4165a' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+      background-repeat:no-repeat;
+      background-position:right 16px center;
+    }
+    textarea{ resize:vertical; min-height:110px; }
+
+    .grid-2{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:18px;
+    }
+
+    .checkbox-group{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:14px 16px;
+      background:var(--clb-blue-pale);
+      border-radius:8px;
+      border:1.5px solid var(--clb-blue-light);
+      height:48px;
+    }
+    input[type="checkbox"]{
+      width:18px; height:18px;
+      cursor:pointer;
+      accent-color:var(--clb-rose);
+    }
+    .checkbox-group label{ margin:0; cursor:pointer; font-weight:600; }
+
+    /* SECTION HEADERS */
+    .section-header{
+      font-size:16px;
+      font-weight:800;
+      color:var(--clb-blue);
+      margin-top:32px;
+      margin-bottom:18px;
+      padding-bottom:12px;
+      border-bottom:2px solid var(--clb-rose);
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    /* BUTTON */
+    button{
+      width:100%;
+      padding:14px 28px;
+      background:linear-gradient(135deg, var(--clb-rose) 0%, var(--clb-rose-light) 100%);
+      color:white;
+      border:none;
+      border-radius:8px;
+      font-size:15px;
+      font-weight:800;
+      cursor:pointer;
+      transition:all .3s ease;
+      box-shadow:0 4px 12px rgba(196,22,90,0.25);
+    }
+    button:hover:not(:disabled){
+      transform:translateY(-2px);
+      box-shadow:0 6px 20px rgba(196,22,90,0.35);
+    }
+    button:disabled{ background:#ccc; cursor:not-allowed; box-shadow:none; }
+
+    /* ALERTS */
+    .alert{
+      padding:16px 20px;
+      border-radius:8px;
+      margin-bottom:18px;
+      font-size:14px;
+      border-left:4px solid;
+      animation:slideDown .35s ease;
+    }
+    @keyframes slideDown{
+      from{ opacity:0; transform:translateY(-10px); }
+      to{ opacity:1; transform:translateY(0); }
+    }
+    .alert-error{
+      background:#fef0f2;
+      color:var(--clb-error);
+      border-left-color:var(--clb-error);
+      display:none;
+    }
+    .alert-success{
+      background:#f0fdf4;
+      color:var(--clb-success);
+      border-left-color:var(--clb-success);
+      display:none;
+    }
+
+    /* CODE BOX */
+    .code-box{
+      background:linear-gradient(135deg, var(--clb-blue-pale) 0%, #f0f8ff 100%);
+      border:2px solid var(--clb-rose);
+      padding:26px;
+      border-radius:12px;
+      text-align:center;
+      margin-top:22px;
+      display:none;
+    }
+    .code-box h3{
+      color:var(--clb-blue);
+      margin-bottom:12px;
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:1.2px;
+      font-weight:800;
+    }
+    .code-box .code{
+      font-size:40px;
+      font-weight:900;
+      color:var(--clb-rose);
+      font-family:'Monaco','Courier New',monospace;
+      letter-spacing:2px;
+    }
+    .mini-actions{
+      display:flex;
+      gap:10px;
+      margin-top:14px;
+      justify-content:center;
+      flex-wrap:wrap;
+    }
+    .mini-btn{
+      width:auto;
+      padding:10px 14px;
+      font-size:13px;
+      border-radius:8px;
+      font-weight:800;
+      box-shadow:none;
+    }
+    .mini-btn.secondary{
+      background:linear-gradient(135deg, var(--clb-blue) 0%, var(--clb-blue-light) 100%);
+    }
+
+    /* FOOTER */
+    .footer{
+      margin-top:60px;
+      padding:28px 20px;
+      text-align:center;
+      color:#999;
+      font-size:12px;
+      border-top:2px solid var(--clb-rose);
+      background:var(--clb-gray);
+    }
+
+    @media (max-width:768px){
+      .grid-2{ grid-template-columns:1fr; }
+      .card{ padding:28px 18px; }
+      h1{ font-size:26px; }
+      .navbar-title{ font-size:16px; }
+    }
+  </style>
 </head>
+
 <body>
-    <!-- NAVBAR -->
-    <nav class="navbar">
-        <div class="navbar-container">
-            <div class="navbar-brand">
-                <div class="navbar-logo">
-                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 120'%3E%3Crect fill='%23003d82' width='300' height='120'/%3E%3Ctext x='50' y='60' font-size='28' font-weight='bold' fill='white' font-family='Arial'%3ECLB%3C/text%3E%3Ctext x='50' y='100' font-size='12' fill='%23c4165a' font-family='Arial'%3ECentre Léon Bérard%3C/text%3E%3C/svg%3E" alt="CLB Logo">
-                </div>
-                <div class="navbar-title">Carnot Registry</div>
-            </div>
-            <div class="navbar-menu" id="navbarMenu">
-                <a onclick="goToPage('form')" style="display:none;" id="navForm">📋 Formulaire</a>
-                <a onclick="goToPage('history')" style="display:none;" id="navHistory">📊 Historique</a>
-                <a onclick="goToPage('admin')" style="display:none;" id="navAdmin">⚙️ Admin</a>
-            </div>
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="navbar-container">
+      <div class="navbar-brand">
+        <div class="navbar-logo">
+          <img
+            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 120'%3E%3Crect fill='%23003d82' width='300' height='120'/%3E%3Ctext x='50' y='60' font-size='28' font-weight='bold' fill='white' font-family='Arial'%3ECLB%3C/text%3E%3Ctext x='50' y='100' font-size='12' fill='%23c4165a' font-family='Arial'%3ECentre Léon B%C3%A9rard%3C/text%3E%3C/svg%3E"
+            alt="CLB Logo"
+          />
         </div>
-    </nav>
-
-    <div class="container">
-        <!-- FORM PAGE -->
-        <div class="page" id="formPage">
-            <div class="card">
-                <div class="card-header">
-                    <h1>Formulaire Carnot</h1>
-                    <p class="subtitle">Remplissez les informations pour générer votre code Carnot</p>
-                </div>
-                <div id="formError" class="alert alert-error" style="display:none;"></div>
-                <div id="formSuccess" class="alert alert-success" style="display:none;"></div>
-
-                <form onsubmit="handleFormSubmit(event)">
-                    <div class="section-header">
-                        <span>📝</span>
-                        Informations Projet
-                    </div>
-
-                    <div class="grid-2">
-                        <div class="form-group">
-                            <label>Référence Interne</label>
-                            <input type="text" id="formRef" placeholder="Ex: REF-2024-001" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Intitulé Projet</label>
-                            <input type="text" id="formIntitule" placeholder="Titre du projet" required>
-                        </div>
-                    </div>
-
-                    <div class="grid-2">
-                        <div class="form-group">
-                            <label>Date de Création</label>
-                            <input type="date" id="formDate" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Année Comptable</label>
-                            <input type="number" id="formAnnee" required>
-                        </div>
-                    </div>
-
-                    <div class="section-header">
-                        <span>🏷️</span>
-                        Classification (A, B, C, D, E)
-                    </div>
-
-                    <div class="grid-2">
-                        <div class="form-group">
-                            <label>Équipe Juridique (A)</label>
-                            <select id="formA" required>
-                                <option value="1">Juridique Hôpital CLB</option>
-                                <option value="2">Juridique DRCI CLB</option>
-                                <option value="3">Valo / Juridique recherche</option>
-                                <option value="4">LIP / EZUS / UCBL</option>
-                                <option value="5">CNRS</option>
-                                <option value="6">INSERM</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Type de Contrat (B)</label>
-                            <select id="formB" required>
-                                <option value="1">MTA / DTA</option>
-                                <option value="2">Collaboration</option>
-                                <option value="3">Prestation</option>
-                                <option value="4">Contrat de financement</option>
-                                <option value="5">Clinique Phase I</option>
-                                <option value="6">Clinique Phase II</option>
-                                <option value="7">Clinique Phase III</option>
-                                <option value="8">Collab Etude Ancillaire</option>
-                                <option value="9">Hébergement</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="grid-2">
-                        <div class="form-group">
-                            <label>Pilotage (C)</label>
-                            <select id="formC" required>
-                                <option value="1">DRCI Précoces</option>
-                                <option value="2">DRCI Promotion Indus</option>
-                                <option value="3">DRCI Promotion CLB</option>
-                                <option value="4">Cellule projets / grant CLB</option>
-                                <option value="5">EMS</option>
-                                <option value="6">Équipe de recherche</option>
-                                <option value="7">DSI</option>
-                                <option value="8">Plateformes technologiques</option>
-                                <option value="9">Équipe Hôpital</option>
-                                <option value="0">Pilotage cotutelle</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Financeur (D)</label>
-                            <select id="formD" required>
-                                <option value="1">Académique / Public (ANR)</option>
-                                <option value="2">Association / Fondation</option>
-                                <option value="3">Fondation industrielle</option>
-                                <option value="4">Industrie - Pharma / Biotech</option>
-                                <option value="5">Industrie - Dispositif Médical</option>
-                                <option value="6">Industrie - Data / IT</option>
-                                <option value="7">Industrie - Équipement recherche</option>
-                                <option value="8">CRO</option>
-                                <option value="9">Industriel / Privé autre</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Propriété (E)</label>
-                        <select id="formE" required>
-                            <option value="1">CLB propriétaire - données ET résultats</option>
-                            <option value="2">CLB propriétaire - données (pas résultats)</option>
-                            <option value="3">CLB propriétaire - résultats (pas données)</option>
-                            <option value="4">Publication uniquement</option>
-                            <option value="5">Aucune valorisation par CLB</option>
-                        </select>
-                    </div>
-
-                    <div class="section-header">
-                        <span>💰</span>
-                        Montant et Statut PME
-                    </div>
-
-                    <div class="grid-2">
-                        <div class="form-group">
-                            <label>Montant du Contrat (€)</label>
-                            <input type="number" id="formMontant" step="0.01" value="0" required>
-                        </div>
-                        <div class="form-group">
-                            <label>&nbsp;</label>
-                            <div class="checkbox-group">
-                                <input type="checkbox" id="formPME">
-                                <label for="formPME">PME</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="section-header">
-                        <span>📌</span>
-                        Informations Complémentaires
-                    </div>
-
-                    <div class="form-group">
-                        <label>Commentaires</label>
-                        <textarea id="formCommentaire" placeholder="Ajoutez vos observations (optionnel)"></textarea>
-                    </div>
-
-                    <button type="submit" style="margin-top: 30px;">✓ Générer Code Carnot</button>
-                </form>
-
-                <div id="codeBox" class="code-box" style="display:none;">
-                    <h3>Code Carnot Généré</h3>
-                    <div class="code" id="generatedCode"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- HISTORY PAGE -->
-        <div class="page" id="historyPage">
-            <div class="card">
-                <div class="card-header">
-                    <h1>Historique</h1>
-                    <p class="subtitle">Tous vos enregistrements Carnot</p>
-                </div>
-                <div id="historyTable"></div>
-            </div>
-        </div>
-
-        <!-- ADMIN PAGE -->
-        <div class="page" id="adminPage">
-            <div class="card">
-                <div class="card-header">
-                    <h1>⚙️ Tableau de Bord Admin</h1>
-                    <p class="subtitle">Gestion complète des enregistrements Carnot</p>
-                </div>
-
-                <div class="admin-stats">
-                    <div class="stat-card">
-                        <div class="stat-value" id="statTotal">0</div>
-                        <div class="stat-label">Total Enregistrements</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="statUsers">0</div>
-                        <div class="stat-label">Utilisateurs Actifs</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="statMontantTotal">0€</div>
-                        <div class="stat-label">Montant Total</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="statMoyenne">0€</div>
-                        <div class="stat-label">Montant Moyen</div>
-                    </div>
-                </div>
-
-                <div class="admin-filters">
-                    <div class="filter-group">
-                        <label>Rechercher</label>
-                        <input type="text" id="adminSearch" placeholder="Référence, Email, Code...">
-                    </div>
-                    <div class="filter-group">
-                        <label>Année Comptable</label>
-                        <select id="adminYearFilter">
-                            <option value="">Toutes les années</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <label>Email Utilisateur</label>
-                        <select id="adminUserFilter">
-                            <option value="">Tous les utilisateurs</option>
-                        </select>
-                    </div>
-                </div>
-
-                <button class="export-btn" onclick="exportToCSV()">📥 Exporter en CSV</button>
-
-                <div class="table-wrapper">
-                    <table id="adminTable">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Email</th>
-                                <th>Référence</th>
-                                <th>Intitulé</th>
-                                <th>Date Création</th>
-                                <th>Année</th>
-                                <th>Équipe (A)</th>
-                                <th>Contrat (B)</th>
-                                <th>Pilotage (C)</th>
-                                <th>Financeur (D)</th>
-                                <th>Propriété (E)</th>
-                                <th>Code Carnot</th>
-                                <th>Montant (€)</th>
-                                <th>PME</th>
-                                <th>Calcul F</th>
-                                <th>Type Projet</th>
-                                <th>Domaine</th>
-                                <th>Statut</th>
-                                <th>Code Validé</th>
-                                <th>Commentaire</th>
-                                <th>Date Enregistrement</th>
-                            </tr>
-                        </thead>
-                        <tbody id="adminTableBody">
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+        <div class="navbar-title">Générateur Code Carnot</div>
+      </div>
     </div>
+  </nav>
 
-    <!-- FOOTER -->
-    <div class="footer">
-        <div class="footer-logo">🧬</div>
-        <p><strong>Carnot Registry</strong> - Centre Léon Bérard Lyon</p>
-        <p style="margin-top: 12px;">© 2024 - Centre de lutte contre le cancer. Tous droits réservés.</p>
+  <div class="container">
+    <div class="card">
+      <div class="card-header">
+        <h1>Formulaire Carnot</h1>
+        <p class="subtitle">Remplis les infos → tu obtiens directement le code Carnot</p>
+      </div>
+
+      <div id="formError" class="alert alert-error"></div>
+      <div id="formSuccess" class="alert alert-success"></div>
+
+      <form id="carnotForm">
+        <div class="section-header"><span>📝</span>Informations Projet</div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Référence Interne</label>
+            <input type="text" id="formRef" placeholder="Ex: REF-2024-001" required />
+            <small>Si tu n’as pas la référence, tu peux mettre “X”.</small>
+          </div>
+
+          <div class="form-group">
+            <label>Intitulé Projet</label>
+            <input type="text" id="formIntitule" placeholder="Titre du projet" required />
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Date de Création</label>
+            <input type="date" id="formDate" required />
+          </div>
+          <div class="form-group">
+            <label>Année Comptable</label>
+            <input type="number" id="formAnnee" required />
+          </div>
+        </div>
+
+        <div class="section-header"><span>🏷️</span>Classification (A, B, C, D, E)</div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Équipe Juridique (A)</label>
+            <select id="formA" required>
+              <option value="1">Juridique Hôpital CLB</option>
+              <option value="2">Juridique DRCI CLB</option>
+              <option value="3">Valo / Juridique recherche Translationnelle / fondamentale</option>
+              <option value="4">LIP / EZUS / UCBL</option>
+              <option value="5">CNRS</option>
+              <option value="6">INSERM</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Type de Contrat (B)</label>
+            <select id="formB" required>
+              <option value="1">MTA / DTA</option>
+              <option value="2">Collaboration</option>
+              <option value="3">Prestation</option>
+              <option value="4">Contrat de financement / reversement</option>
+              <option value="5">Clinique Phase I (ou I + II)</option>
+              <option value="6">Clinique Phase II</option>
+              <option value="7">Clinique Phase III</option>
+              <option value="8">Collab Etude Ancillaire</option>
+              <option value="9">Hébergement</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Équipe de pilotage projet au CLB (C)</label>
+            <select id="formC" required>
+              <option value="1">DRCI promotion CLB Précoces</option>
+              <option value="2">DRCI Investigation (Promotion Indus) - BEC</option>
+              <option value="3">DRCI Investigation CLB non précoce</option>
+              <option value="4">Cellule projets / grant CLB</option>
+              <option value="5">EMS</option>
+              <option value="6">Équipe de recherche Translationnelle / Fondamentale</option>
+              <option value="7">DSI</option>
+              <option value="8">Plateformes technologiques (1 seule)</option>
+              <option value="9">Équipe Hôpital</option>
+              <option value="0">Pilotage cotutelle (UCBL / Inserm / CNRS / LIP / Ezus)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Financeur / partenaire (D)</label>
+            <select id="formD" required>
+              <option value="1">Académique / Public (ANR / Europe...)</option>
+              <option value="2">Association / Fondation indépendante</option>
+              <option value="3">Fondation industrielle</option>
+              <option value="4">Industrie – Médicament / Pharma / Biotech</option>
+              <option value="5">Industrie – Dispositif Médical / Équipements / MedTech</option>
+              <option value="6">Industrie – Data / Logiciels / IT</option>
+              <option value="7">Industrie – Équipement recherche</option>
+              <option value="8">CRO</option>
+              <option value="9">Industriel / Privé autre</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Propriété intellectuelle issue du projet (E)</label>
+          <select id="formE" required>
+            <option value="1">CLB propriétaire ou copro données générées ET résultats</option>
+            <option value="2">CLB propriétaire ou copro données mais pas résultats</option>
+            <option value="3">CLB propriétaire ou copro résultats mais pas données</option>
+            <option value="4">Publication uniquement – CLB Ni copropriétaire résultats Ni copro données générées</option>
+            <option value="5">CLB propriétaire des améliorations de son savoir-faire / connaissances propres (avec ou sans publication)</option>
+            <option value="6">Aucune valorisation par le CLB</option>
+          </select>
+        </div>
+
+        <div class="section-header"><span>💰</span>Montant reçu par le CLB (F)</div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label>Montant du Contrat (€)</label>
+            <input type="number" id="formMontant" step="0.01" value="0" required />
+            <small>Le calcul de F suit la grille (et la case PME).</small>
+          </div>
+
+          <div class="form-group">
+            <label>&nbsp;</label>
+            <div class="checkbox-group">
+              <input type="checkbox" id="formPME" />
+              <label for="formPME">PME</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-header"><span>📌</span>Commentaires</div>
+
+        <div class="form-group">
+          <label>Commentaires (optionnel)</label>
+          <textarea id="formCommentaire" placeholder="Ajoutez vos observations..."></textarea>
+        </div>
+
+        <button type="submit" style="margin-top: 10px;">✓ Générer Code Carnot</button>
+      </form>
+
+      <div id="codeBox" class="code-box">
+        <h3>Code Carnot Généré</h3>
+        <div class="code" id="generatedCode">CT 000000</div>
+
+        <div class="mini-actions">
+          <button type="button" class="mini-btn secondary" id="copyBtn">📋 Copier</button>
+          <button type="button" class="mini-btn" id="newBtn">➕ Nouveau</button>
+        </div>
+      </div>
     </div>
-
-    <script>
-        // ============================================
-        // DATA STORAGE
-        // ============================================
-        const STORAGE_USERS = 'carnot_users';
-        const STORAGE_RECORDS = 'carnot_records';
-        const STORAGE_CURRENT_USER = 'carnot_current_user';
-
-        function getUsers() {
-            const data = localStorage.getItem(STORAGE_USERS);
-            return data ? JSON.parse(data) : [];
-        }
-
-        function saveUsers(users) {
-            localStorage.setItem(STORAGE_USERS, JSON.stringify(users));
-        }
-
-        function getRecords() {
-            const data = localStorage.getItem(STORAGE_RECORDS);
-            return data ? JSON.parse(data) : [];
-        }
-
-        function saveRecords(records) {
-            localStorage.setItem(STORAGE_RECORDS, JSON.stringify(records));
-        }
-
-        function getCurrentUser() {
-            const data = localStorage.getItem(STORAGE_CURRENT_USER);
-            return data ? JSON.parse(data) : null;
-        }
-
-        function setCurrentUser(user) {
-            if (user) {
-                localStorage.setItem(STORAGE_CURRENT_USER, JSON.stringify(user));
-            } else {
-                localStorage.removeItem(STORAGE_CURRENT_USER);
-            }
-        }
-
-        // ============================================
-        // CARNOT LOGIC
-        // ============================================
-        function calculateF(montant, pme) {
-            if (montant < 0) return 6;
-            if (montant === 0) return 5;
-            if (montant < 15000) return 1;
-            if (montant >= 15000 && montant <= 30000) return pme ? 2 : 3;
-            return 4;
-        }
-
-        function generateCarnotCode(a, b, c, d, e) {
-            const montant = parseFloat(document.getElementById('formMontant').value);
-            const pme = document.getElementById('formPME').checked;
-            const f = calculateF(montant, pme);
-            return `CT ${a}${b}${c}${d}${e}${f}`;
-        }
-
-        // ============================================
-        // PAGE NAVIGATION
-        // ============================================
-        function goToPage(pageName) {
-            const currentUser = getCurrentUser();
-
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(pageName + 'Page').classList.add('active');
-
-            const isLoggedIn = true;
-
-            document.getElementById('navForm').style.display = isLoggedIn ? 'block' : 'none';
-            document.getElementById('navHistory').style.display = isLoggedIn ? 'block' : 'none';
-            document.getElementById('navAdmin').style.display = (isLoggedIn && currentUser?.role === 'admin') ? 'block' : 'none';
-          
-
-            if (pageName === 'form') {
-                const today = new Date().toISOString().split('T')[0];
-                document.getElementById('formDate').value = today;
-                document.getElementById('formAnnee').value = new Date().getFullYear();
-            }
-
-            if (pageName === 'history') {
-                loadHistory();
-            }
-
-            if (pageName === 'admin' && currentUser?.role === 'admin') {
-                loadAdminPage();
-            }
-        }
-
-        // ============================================
-        // AUTH HANDLERS
-        // ============================================
-        function handleSignup(event) {
-            event.preventDefault();
-
-            const email = document.getElementById('signupEmail').value.toLowerCase();
-            const username = document.getElementById('signupUsername').value;
-            const password = document.getElementById('signupPassword').value;
-            const confirm = document.getElementById('signupConfirm').value;
-
-            if (!email.includes('@lyon.unicancer.fr')) {
-                showError('signupError', '❌ Email doit être au format: prenom.nom@lyon.unicancer.fr');
-                return;
-            }
-
-            if (password.length < 8) {
-                showError('signupError', '❌ Mot de passe minimum 8 caractères');
-                return;
-            }
-
-            if (password !== confirm) {
-                showError('signupError', '❌ Les mots de passe ne correspondent pas');
-                return;
-            }
-
-            const users = getUsers();
-            if (users.find(u => u.email === email || u.username === username)) {
-                showError('signupError', '❌ Email ou utilisateur déjà enregistré');
-                return;
-            }
-
-            const newUser = {
-                id: users.length + 1,
-                email: email,
-                username: username,
-                password: password,
-                role: 'user',
-                created_at: new Date().toISOString()
-            };
-
-            users.push(newUser);
-            saveUsers(users);
-
-            setCurrentUser({ id: newUser.id, email: newUser.email, username: newUser.username, role: newUser.role });
-
-            goToPage('form');
-        }
-
-        function handleLogin(event) {
-            event.preventDefault();
-
-            const email = document.getElementById('loginEmail').value.toLowerCase();
-            const password = document.getElementById('loginPassword').value;
-
-            const users = getUsers();
-            const user = users.find(u => u.email === email && u.password === password);
-
-            if (!user) {
-                showError('loginError', '❌ Email ou mot de passe incorrect');
-                return;
-            }
-
-            setCurrentUser({ id: user.id, email: user.email, username: user.username, role: user.role });
-            goToPage('form');
-        }
-
-        function logout() {
-            setCurrentUser(null);
-            goToPage('login');
-        }
-
-        // ============================================
-        // FORM HANDLER
-        // ============================================
-        function handleFormSubmit(event) {
-            event.preventDefault();
-
-            const currentUser = getCurrentUser();
-           
-
-            const a = parseInt(document.getElementById('formA').value);
-            const b = parseInt(document.getElementById('formB').value);
-            const c = parseInt(document.getElementById('formC').value);
-            const d = parseInt(document.getElementById('formD').value);
-            const e = parseInt(document.getElementById('formE').value);
-
-            const code = generateCarnotCode(a, b, c, d, e);
-
-            const record = {
-                id: Date.now(),
-                user_id: 1,
-                email: 'b.f@lyon.unicancer.fr',
-                reference_interne: document.getElementById('formRef').value,
-                intitule_projet: document.getElementById('formIntitule').value,
-                date_creation: document.getElementById('formDate').value,
-                annee_comptable: parseInt(document.getElementById('formAnnee').value),
-                equipe_juridique: a,
-                type_contrat: b,
-                pilotage: c,
-                financeur: d,
-                propriete: e,
-                montant: parseFloat(document.getElementById('formMontant').value),
-                pme: document.getElementById('formPME').checked,
-                code_carnot: code,
-                commentaire: document.getElementById('formCommentaire').value,
-                created_at: new Date().toISOString()
-            };
-
-            const records = getRecords();
-            records.push(record);
-            saveRecords(records);
-
-            document.getElementById('formError').style.display = 'none';
-            document.getElementById('formSuccess').style.display = 'block';
-            document.getElementById('formSuccess').innerHTML = `✅ <strong>Enregistrement créé!</strong><br>Code: <strong>${code}</strong>`;
-            document.getElementById('generatedCode').textContent = code;
-            document.getElementById('codeBox').style.display = 'block';
-
-            setTimeout(() => {
-                document.querySelector('form').reset();
-                document.getElementById('formDate').value = new Date().toISOString().split('T')[0];
-                document.getElementById('formAnnee').value = new Date().getFullYear();
-            }, 1000);
-        }
-
-        // ============================================
-        // HISTORY HANDLER
-        // ============================================
-        function loadHistory() {
-            const currentUser = getCurrentUser();
-            const records = getRecords();
-
-            const userRecords = records.filter(r => r.user_id === currentUser.id);
-
-            if (userRecords.length === 0) {
-                document.getElementById('historyTable').innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">📭</div>
-                        <p>Aucun enregistrement pour le moment</p>
-                        <button style="width: 200px;" onclick="goToPage('form')">+ Créer un enregistrement</button>
-                    </div>
-                `;
-                return;
-            }
-
-            let html = '<table><thead><tr>';
-            html += '<th>Référence</th>';
-            html += '<th>Intitulé</th>';
-            html += '<th>Code Carnot</th>';
-            html += '<th>Montant</th>';
-            html += '<th>Date</th>';
-            html += '</tr></thead><tbody>';
-
-            userRecords.forEach(r => {
-                const date = new Date(r.created_at).toLocaleDateString('fr-FR');
-                html += `<tr>`;
-                html += `<td><strong>${r.reference_interne}</strong></td>`;
-                html += `<td>${r.intitule_projet}</td>`;
-                html += `<td><span class="badge">${r.code_carnot}</span></td>`;
-                html += `<td>${r.montant.toFixed(2)}€</td>`;
-                html += `<td>${date}</td>`;
-                html += `</tr>`;
-            });
-
-            html += '</tbody></table>';
-            document.getElementById('historyTable').innerHTML = html;
-        }
-
-        // ============================================
-        // ADMIN PAGE HANDLER
-        // ============================================
-        function loadAdminPage() {
-            const records = getRecords();
-
-            const totalRecords = records.length;
-            const uniqueUsers = new Set(records.map(r => r.user_id)).size;
-            const totalMontant = records.reduce((sum, r) => sum + r.montant, 0);
-            const avgMontant = totalRecords > 0 ? totalMontant / totalRecords : 0;
-
-            document.getElementById('statTotal').textContent = totalRecords;
-            document.getElementById('statUsers').textContent = uniqueUsers;
-            document.getElementById('statMontantTotal').textContent = totalMontant.toFixed(2);
-            document.getElementById('statMoyenne').textContent = avgMontant.toFixed(2);
-
-            const years = new Set(records.map(r => r.annee_comptable));
-            const yearSelect = document.getElementById('adminYearFilter');
-            yearSelect.innerHTML = '<option value="">Toutes les années</option>';
-            Array.from(years).sort().reverse().forEach(year => {
-                const opt = document.createElement('option');
-                opt.value = year;
-                opt.textContent = year;
-                yearSelect.appendChild(opt);
-            });
-
-            const userSelect = document.getElementById('adminUserFilter');
-            userSelect.innerHTML = '<option value="">Tous les utilisateurs</option>';
-            const uniqueEmails = new Set(records.map(r => r.email));
-            Array.from(uniqueEmails).sort().forEach(email => {
-                const opt = document.createElement('option');
-                opt.value = email;
-                opt.textContent = email;
-                userSelect.appendChild(opt);
-            });
-
-            displayAdminTable(records);
-
-            document.getElementById('adminSearch').addEventListener('input', () => filterAdminTable(records));
-            document.getElementById('adminYearFilter').addEventListener('change', () => filterAdminTable(records));
-            document.getElementById('adminUserFilter').addEventListener('change', () => filterAdminTable(records));
-        }
-
-        function filterAdminTable(allRecords) {
-            const searchTerm = document.getElementById('adminSearch').value.toLowerCase();
-            const yearFilter = document.getElementById('adminYearFilter').value;
-            const userFilter = document.getElementById('adminUserFilter').value;
-
-            const filtered = allRecords.filter(r => {
-                const matchSearch = !searchTerm || 
-                    r.reference_interne.toLowerCase().includes(searchTerm) ||
-                    r.email.toLowerCase().includes(searchTerm) ||
-                    r.code_carnot.includes(searchTerm) ||
-                    r.intitule_projet.toLowerCase().includes(searchTerm);
-                
-                const matchYear = !yearFilter || r.annee_comptable.toString() === yearFilter;
-                const matchUser = !userFilter || r.email === userFilter;
-
-                return matchSearch && matchYear && matchUser;
-            });
-
-            displayAdminTable(filtered);
-        }
-
-        function displayAdminTable(records) {
-            const tbody = document.getElementById('adminTableBody');
-            tbody.innerHTML = '';
-
-            records.forEach((record, index) => {
-                const row = document.createElement('tr');
-                const f = calculateF(record.montant, record.pme);
-                const date = new Date(record.created_at).toLocaleDateString('fr-FR');
-
-                row.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td><strong>${record.email}</strong></td>
-                    <td>${record.reference_interne}</td>
-                    <td>${record.intitule_projet}</td>
-                    <td>${record.date_creation}</td>
-                    <td>${record.annee_comptable}</td>
-                    <td>${record.equipe_juridique}</td>
-                    <td>${record.type_contrat}</td>
-                    <td>${record.pilotage}</td>
-                    <td>${record.financeur}</td>
-                    <td>${record.propriete}</td>
-                    <td><span class="badge">${record.code_carnot}</span></td>
-                    <td>${record.montant.toFixed(2)}</td>
-                    <td>${record.pme ? '✅' : '❌'}</td>
-                    <td>${f}</td>
-                    <td>${record.type_projet || '-'}</td>
-                    <td>${record.domaine_therapeutique || '-'}</td>
-                    <td>${record.statut_projet || '-'}</td>
-                    <td>${record.code_valide}</td>
-                    <td>${record.commentaire ? record.commentaire.substring(0, 30) + '...' : '-'}</td>
-                    <td>${date}</td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-
-        function exportToCSV() {
-            const records = getRecords();
-            const searchTerm = document.getElementById('adminSearch').value.toLowerCase();
-            const yearFilter = document.getElementById('adminYearFilter').value;
-            const userFilter = document.getElementById('adminUserFilter').value;
-
-            const filtered = records.filter(r => {
-                const matchSearch = !searchTerm || 
-                    r.reference_interne.toLowerCase().includes(searchTerm) ||
-                    r.email.toLowerCase().includes(searchTerm) ||
-                    r.code_carnot.includes(searchTerm) ||
-                    r.intitule_projet.toLowerCase().includes(searchTerm);
-                
-                const matchYear = !yearFilter || r.annee_comptable.toString() === yearFilter;
-                const matchUser = !userFilter || r.email === userFilter;
-
-                return matchSearch && matchYear && matchUser;
-            });
-
-            let csv = 'ID,Email,Reference_Interne,Intitule_Projet,Date_Creation,Annee_Comptable,Equipe_Juridique,Type_Contrat,Pilotage,Financeur,Propriete,Code_Carnot,Montant_EUR,PME,Calcul_F,Type_Projet,Domaine_Therapeutique,Statut_Projet,Code_Valide,Commentaire,Date_Enregistrement\n';
-
-            filtered.forEach(record => {
-                const f = calculateF(record.montant, record.pme);
-                const date = new Date(record.created_at).toLocaleDateString('fr-FR');
-                const row = [
-                    record.id,
-                    `"${record.email}"`,
-                    `"${record.reference_interne}"`,
-                    `"${record.intitule_projet}"`,
-                    record.date_creation,
-                    record.annee_comptable,
-                    record.equipe_juridique,
-                    record.type_contrat,
-                    record.pilotage,
-                    record.financeur,
-                    record.propriete,
-                    record.code_carnot,
-                    record.montant.toFixed(2),
-                    record.pme ? 'Oui' : 'Non',
-                    f,
-                    record.type_projet || '',
-                    record.domaine_therapeutique || '',
-                    record.statut_projet || '',
-                    record.code_valide,
-                    `"${record.commentaire || ''}"`,
-                    date
-                ];
-                csv += row.join(',') + '\n';
-            });
-
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            link.setAttribute('href', url);
-            link.setAttribute('download', `carnot-registry-${new Date().toISOString().split('T')[0]}.csv`);
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        // ============================================
-        // UTILS
-        // ============================================
-        function showError(elementId, message) {
-            const errorEl = document.getElementById(elementId);
-            errorEl.innerHTML = message;
-            errorEl.style.display = 'block';
-        }
-
-        // ============================================
-        // INIT
-        // ============================================
-        window.addEventListener('load', () => {
-                goToPage('form');
-        })
-    </script>
+  </div>
+
+  <div class="footer">
+    <p><strong>Centre Léon Bérard</strong> — Générateur Code Carnot</p>
+    <p style="margin-top: 10px;">© 2024 - Tous droits réservés.</p>
+  </div>
+
+  <script>
+    // =========================
+    // CARNOT LOGIC (A..F)
+    // =========================
+    function calculateF(montant, pme) {
+      if (montant < 0) return 6;          // < 0 = paiement par le CLB
+      if (montant === 0) return 5;        // 0 = sans échange financier
+      if (montant < 15000) return 1;      // < 15 k€
+      if (montant >= 15000 && montant <= 30000) return pme ? 2 : 3; // 15-30k (PME ou non)
+      return 4;                           // > 30 k€
+    }
+
+    function generateCarnotCode(a, b, c, d, e) {
+      const montant = parseFloat(document.getElementById('formMontant').value || '0');
+      const pme = document.getElementById('formPME').checked;
+      const f = calculateF(montant, pme);
+      return `CT ${a}${b}${c}${d}${e}${f}`;
+    }
+
+    function showError(message) {
+      const el = document.getElementById('formError');
+      el.textContent = message;
+      el.style.display = 'block';
+      document.getElementById('formSuccess').style.display = 'none';
+    }
+
+    function showSuccess(message) {
+      const el = document.getElementById('formSuccess');
+      el.innerHTML = message;
+      el.style.display = 'block';
+      document.getElementById('formError').style.display = 'none';
+    }
+
+    function setDefaultDates() {
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('formDate').value = today;
+      document.getElementById('formAnnee').value = new Date().getFullYear();
+    }
+
+    // =========================
+    // FORM HANDLER
+    // =========================
+    document.getElementById('carnotForm').addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const ref = document.getElementById('formRef').value.trim();
+      const intitule = document.getElementById('formIntitule').value.trim();
+
+      if (!ref || !intitule) {
+        showError("❌ Merci de remplir la référence interne et l’intitulé du projet.");
+        return;
+      }
+
+      const a = parseInt(document.getElementById('formA').value, 10);
+      const b = parseInt(document.getElementById('formB').value, 10);
+      const c = parseInt(document.getElementById('formC').value, 10);
+      const d = parseInt(document.getElementById('formD').value, 10);
+      const e = parseInt(document.getElementById('formE').value, 10);
+
+      const code = generateCarnotCode(a, b, c, d, e);
+
+      document.getElementById('generatedCode').textContent = code;
+      document.getElementById('codeBox').style.display = 'block';
+      showSuccess(`✅ <strong>Code généré :</strong> <strong>${code}</strong>`);
+    });
+
+    // =========================
+    // COPY / NEW
+    // =========================
+    document.getElementById('copyBtn').addEventListener('click', async () => {
+      const code = document.getElementById('generatedCode').textContent;
+      try {
+        await navigator.clipboard.writeText(code);
+        showSuccess(`✅ <strong>Copié :</strong> ${code}`);
+      } catch (e) {
+        showError("❌ Impossible de copier automatiquement. Sélectionne le code et copie-le manuellement.");
+      }
+    });
+
+    document.getElementById('newBtn').addEventListener('click', () => {
+      document.getElementById('carnotForm').reset();
+      setDefaultDates();
+      document.getElementById('codeBox').style.display = 'none';
+      document.getElementById('formError').style.display = 'none';
+      document.getElementById('formSuccess').style.display = 'none';
+    });
+
+    // INIT
+    window.addEventListener('load', () => {
+      setDefaultDates();
+    });
+  </script>
 </body>
 </html>
