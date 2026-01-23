@@ -498,8 +498,10 @@
 
         <div class="mini-actions">
           <button type="button" class="mini-btn secondary" id="copyBtn">📋 Copier</button>
+          <button type="button" class="mini-btn secondary" id="pdfBtn">📄 Exporter PDF</button>
           <button type="button" class="mini-btn" id="newBtn">➕ Nouveau</button>
         </div>
+
       </div>
 
 
@@ -601,7 +603,71 @@
         if (s) s.selectedIndex = 0;
       });
     });
+    // Export PDF simple (impression navigateur)
+    document.getElementById('pdfBtn').addEventListener('click', () => {
+      const code = document.getElementById('generatedCode').textContent.trim();
+      if (!code) {
+        showError("❌ Génère d’abord un code Carnot.");
+        return;
+      }
+
+      const ref = document.getElementById('formRef').value || '-';
+      const intitule = document.getElementById('formIntitule').value || '-';
+      const montant = document.getElementById('formMontant').value || '-';
+      const pme = document.getElementById('formPME').checked ? 'Oui' : 'Non';
+
+      const a = document.getElementById('formA').selectedOptions[0].textContent;
+      const b = document.getElementById('formB').selectedOptions[0].textContent;
+      const c = document.getElementById('formC').selectedOptions[0].textContent;
+      const d = document.getElementById('formD').selectedOptions[0].textContent;
+      const e = document.getElementById('formE').selectedOptions[0].textContent;
+
+      const html = `
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Export Code Carnot</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 30px; }
+  h1 { color: #003d82; }
+  .code { font-size: 28px; font-weight: bold; color: #c4165a; margin: 20px 0; }
+  table { width: 100%; border-collapse: collapse; }
+  td { padding: 8px; border-bottom: 1px solid #ddd; }
+  td:first-child { font-weight: bold; color: #003d82; width: 35%; }
+</style>
+</head>
+<body>
+  <h1>Centre Léon Bérard — Code Carnot</h1>
+
+  <div class="code">${code}</div>
+
+  <table>
+    <tr><td>Référence interne</td><td>${ref}</td></tr>
+    <tr><td>Intitulé projet</td><td>${intitule}</td></tr>
+    <tr><td>Montant (€)</td><td>${montant}</td></tr>
+    <tr><td>PME</td><td>${pme}</td></tr>
+    <tr><td>A — Équipe juridique</td><td>${a}</td></tr>
+    <tr><td>B — Type de contrat</td><td>${b}</td></tr>
+    <tr><td>C — Pilotage</td><td>${c}</td></tr>
+    <tr><td>D — Financeur</td><td>${d}</td></tr>
+    <tr><td>E — Propriété</td><td>${e}</td></tr>
+  </table>
+
+  <script>
+    window.onload = () => window.print();
   </script>
+</body>
+
+</html>
+`;
+
+const w = window.open('', '_blank');
+w.document.write(html);
+w.document.close();
+});
+
+</script>
 </body>
 
 </html>
