@@ -5,84 +5,193 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Générateur Code Carnot - Centre Léon Bérard</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
+
     :root{
-      --clb-rose:#c4165a;--clb-rose-light:#d63d73;--clb-blue:#003d82;
-      --clb-blue-light:#0066cc;--clb-blue-pale:#e8f0ff;
-      --clb-border:#e0e0e0;--clb-dark:#2c2c2c;
-      --clb-success:#27ae60;--clb-error:#c0392b;
+      --clb-rose:#c4165a;
+      --clb-rose-light:#d63d73;
+      --clb-blue:#003d82;
+      --clb-blue-light:#0066cc;
+      --clb-blue-pale:#e8f0ff;
+      --clb-border:#e0e0e0;
+      --clb-dark:#2c2c2c;
+      --success:#27ae60;
+      --error:#c0392b;
     }
+
     body{
-      font-family:'Inter',sans-serif;background:#fff;color:var(--clb-dark);
+      font-family:'Inter',sans-serif;
+      background:#fff;
+      color:var(--clb-dark);
     }
+
+    /* NAVBAR */
     .navbar{
-      position:fixed;top:0;left:0;right:0;background:#fff;
-      border-bottom:1px solid var(--clb-border);z-index:1000;
+      position:fixed;top:0;left:0;right:0;
+      background:#fff;
+      border-bottom:1px solid var(--clb-border);
+      z-index:1000;
     }
     .navbar-container{
-      max-width:1100px;margin:auto;padding:12px 20px;
-      display:flex;align-items:center;gap:14px;
+      max-width:1100px;
+      margin:auto;
+      padding:12px 20px;
+      display:flex;
+      align-items:center;
+      gap:14px;
     }
-    .navbar-logo img{height:48px;width:auto;}
-    .navbar-title{font-size:18px;font-weight:800;color:var(--clb-blue);}
-    .container{max-width:800px;margin:100px auto 40px;padding:0 20px;}
+    .navbar-logo img{height:48px;}
+    .navbar-title{
+      font-size:18px;
+      font-weight:800;
+      color:var(--clb-blue);
+    }
+
+    /* PAGE */
+    .container{
+      max-width:800px;
+      margin:110px auto 50px;
+      padding:0 20px;
+    }
     .card{
-      background:#fff;border:1px solid var(--clb-border);
-      border-radius:12px;padding:28px;
+      background:#fff;
+      border:1px solid var(--clb-border);
+      border-radius:12px;
+      padding:36px;
     }
+
     h1{
-      font-size:30px;font-weight:800;
+      text-align:center;
+      font-size:30px;
+      font-weight:800;
       background:linear-gradient(135deg,var(--clb-blue),var(--clb-rose));
-      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-      margin-bottom:6px;text-align:center;
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      margin-bottom:8px;
     }
-    .subtitle{text-align:center;color:#666;font-size:14px;margin-bottom:16px;}
+    .subtitle{
+      text-align:center;
+      font-size:14px;
+      color:#666;
+      margin-bottom:22px;
+    }
+
+    /* ESPACES (IMPORTANT) */
     .section-header{
-      margin:20px 0 12px;font-weight:800;color:var(--clb-blue);
-      border-bottom:2px solid var(--clb-rose);padding-bottom:8px;
-      display:flex;gap:8px;align-items:center;
+      margin:32px 0 16px;
+      font-weight:800;
+      color:var(--clb-blue);
+      border-bottom:2px solid var(--clb-rose);
+      padding-bottom:8px;
+      display:flex;
+      align-items:center;
+      gap:8px;
     }
-    .form-group{margin-bottom:18px;}
-    label{font-weight:700;font-size:14px;margin-bottom:6px;display:block;}
-    input,select,textarea{
-      width:100%;padding:12px 14px;border:1.5px solid var(--clb-border);
-      border-radius:8px;font-family:inherit;font-size:14px;
+    .form-group{margin-bottom:26px;}
+    label{
+      display:block;
+      font-weight:700;
+      font-size:14px;
+      margin-bottom:8px;
+    }
+    input,select{
+      width:100%;
+      padding:12px 14px;
+      border:1.5px solid var(--clb-border);
+      border-radius:8px;
+      font-size:14px;
     }
     select{
       appearance:none;
       background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12'%3E%3Cpath fill='%23c4165a' d='M6 9L1 4h10z'/%3E%3C/svg%3E")
       no-repeat right 14px center;
     }
-    textarea{min-height:100px;resize:vertical;}
-    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-    .checkbox-group{
-      display:flex;align-items:center;gap:10px;
-      background:var(--clb-blue-pale);padding:12px;border-radius:8px;
+
+    .grid-2{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:22px;
     }
+
+    .checkbox-group{
+      margin-top:10px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:12px;
+      background:var(--clb-blue-pale);
+      border-radius:8px;
+    }
+
     button{
-      width:100%;padding:14px;margin:14px 0;
+      width:100%;
+      padding:14px;
       background:linear-gradient(135deg,var(--clb-rose),var(--clb-rose-light));
-      color:#fff;border:none;border-radius:8px;font-weight:800;
+      color:#fff;
+      border:none;
+      border-radius:8px;
+      font-weight:800;
       cursor:pointer;
     }
-    .alert{display:none;padding:14px;border-left:4px solid;margin-bottom:12px;}
-    .alert-success{background:#f0fdf4;color:var(--clb-success);border-color:var(--clb-success);}
-    .alert-error{background:#fef0f2;color:var(--clb-error);border-color:var(--clb-error);}
-    .code-box{
-      display:none;margin-top:20px;padding:20px;border:2px solid var(--clb-rose);
-      border-radius:12px;text-align:center;
+
+    .alert{
+      display:none;
+      padding:14px;
+      margin-top:14px;
+      border-left:4px solid;
+      font-size:14px;
     }
-    .code{font-size:36px;font-weight:900;color:var(--clb-rose);}
+    .alert-success{background:#f0fdf4;color:var(--success);border-color:var(--success);}
+    .alert-error{background:#fef0f2;color:var(--error);border-color:var(--error);}
+
+    .code-box{
+      display:none;
+      margin-top:28px;
+      padding:24px;
+      border:2px solid var(--clb-rose);
+      border-radius:12px;
+      text-align:center;
+    }
+    .code{
+      font-size:38px;
+      font-weight:900;
+      color:var(--clb-rose);
+      margin-bottom:14px;
+    }
+
+    .mini-actions{
+      display:flex;
+      gap:12px;
+      justify-content:center;
+      flex-wrap:wrap;
+    }
+    .mini-btn{
+      width:auto;
+      padding:10px 16px;
+      font-size:13px;
+      font-weight:800;
+      border-radius:8px;
+      border:none;
+      cursor:pointer;
+    }
+    .mini-btn.secondary{
+      background:linear-gradient(135deg,var(--clb-blue),var(--clb-blue-light));
+      color:#fff;
+    }
+
     .footer{
-      margin-top:60px;padding:24px;text-align:center;
-      font-size:12px;color:#999;border-top:2px solid var(--clb-rose);
+      margin-top:60px;
+      padding:24px;
+      text-align:center;
+      font-size:12px;
+      color:#999;
+      border-top:2px solid var(--clb-rose);
       background:#f5f5f5;
     }
+
     @media(max-width:768px){
       .grid-2{grid-template-columns:1fr;}
     }
@@ -104,9 +213,9 @@
   <div class="card">
 
     <h1>Formulaire Carnot</h1>
-    <p class="subtitle">Le code Carnot est généré automatiquement à partir des éléments saisis</p>
+    <p class="subtitle">Le code Carnot est généré automatiquement</p>
 
-    <!-- ✅ BOUTON EN HAUT (SANS CHANGER LE RESTE) -->
+    <!-- BOUTON EN HAUT -->
     <button type="submit" form="carnotForm">✓ Générer Code Carnot</button>
 
     <div id="formError" class="alert alert-error"></div>
@@ -118,18 +227,18 @@
 
       <div class="grid-2">
         <div class="form-group">
-          <label>Référence Interne</label>
+          <label>Référence interne</label>
           <input type="text" id="formRef">
         </div>
         <div class="form-group">
-          <label>Intitulé Projet</label>
+          <label>Intitulé du projet</label>
           <input type="text" id="formIntitule">
         </div>
       </div>
 
       <div class="section-header">🏷️ Classification</div>
 
-      <label>Équipe Juridique (A)</label>
+      <label>A — Équipe juridique</label>
       <select id="formA" required>
         <option value="" selected disabled>Sélectionner…</option>
         <option value="1">Juridique Hôpital CLB</option>
@@ -140,58 +249,41 @@
         <option value="6">INSERM</option>
       </select>
 
-      <label>Type de Contrat (B)</label>
+      <label>B — Type de contrat</label>
       <select id="formB" required>
         <option value="" selected disabled>Sélectionner…</option>
         <option value="1">MTA / DTA</option>
         <option value="2">Collaboration</option>
         <option value="3">Prestation</option>
-        <option value="4">Contrat de financement / reversement</option>
-        <option value="5">Clinique Phase I (ou I + II)</option>
+        <option value="4">Contrat de financement</option>
+        <option value="5">Clinique Phase I</option>
         <option value="6">Clinique Phase II</option>
         <option value="7">Clinique Phase III</option>
-        <option value="8">Collab Etude Ancillaire</option>
-        <option value="9">Hébergement</option>
       </select>
 
-      <label>Pilotage Projet (C)</label>
+      <label>C — Pilotage</label>
       <select id="formC" required>
         <option value="" selected disabled>Sélectionner…</option>
-        <option value="1">DRCI promotion CLB Précoces</option>
-        <option value="2">DRCI Investigation Indus</option>
-        <option value="3">DRCI Investigation CLB</option>
-        <option value="4">Cellule projets / grant</option>
-        <option value="5">EMS</option>
-        <option value="6">Équipe de recherche</option>
-        <option value="7">DSI</option>
-        <option value="8">Plateformes technologiques</option>
-        <option value="9">Équipe Hôpital</option>
-        <option value="0">Pilotage cotutelle</option>
+        <option value="1">DRCI promotion CLB</option>
+        <option value="2">Investigation Indus</option>
+        <option value="3">Équipe recherche</option>
+        <option value="4">Plateformes</option>
       </select>
 
-      <label>Financeur (D)</label>
+      <label>D — Financeur</label>
       <select id="formD" required>
         <option value="" selected disabled>Sélectionner…</option>
-        <option value="1">Académique / Public</option>
-        <option value="2">Association / Fondation</option>
-        <option value="3">Fondation industrielle</option>
-        <option value="4">Industrie Pharma / Biotech</option>
-        <option value="5">Industrie Dispositif Médical</option>
-        <option value="6">Industrie Data / IT</option>
-        <option value="7">Équipement recherche</option>
-        <option value="8">CRO</option>
-        <option value="9">Privé autre</option>
+        <option value="1">Public</option>
+        <option value="2">Association</option>
+        <option value="3">Industrie</option>
       </select>
 
-      <label>Propriété (E)</label>
+      <label>E — Propriété</label>
       <select id="formE" required>
         <option value="" selected disabled>Sélectionner…</option>
-        <option value="1">CLB propriétaire données et résultats</option>
-        <option value="2">CLB propriétaire données</option>
-        <option value="3">CLB propriétaire résultats</option>
-        <option value="4">Publication uniquement</option>
-        <option value="5">Amélioration savoir-faire CLB</option>
-        <option value="6">Aucune valorisation CLB</option>
+        <option value="1">CLB propriétaire</option>
+        <option value="2">Publication uniquement</option>
+        <option value="3">Aucune valorisation</option>
       </select>
 
       <div class="section-header">💰 Montant</div>
@@ -203,13 +295,16 @@
         <label for="formPME">PME</label>
       </div>
 
-      <!-- (si tu avais déjà un bouton en bas, tu peux le laisser, sinon celui du haut suffit) -->
-      <!-- <button type="submit">✓ Générer Code Carnot</button> -->
     </form>
 
     <div id="codeBox" class="code-box">
-      <h3>Code Carnot</h3>
       <div class="code" id="generatedCode"></div>
+
+      <div class="mini-actions">
+        <button class="mini-btn secondary" id="copyBtn">📋 Copier</button>
+        <button class="mini-btn secondary" id="pdfBtn">📄 Export PDF</button>
+        <button class="mini-btn" id="resetBtn">➕ Réinitialiser</button>
+      </div>
     </div>
 
   </div>
@@ -217,57 +312,59 @@
 
 <div class="footer">
   <p><strong>Centre Léon Bérard — Générateur Code Carnot</strong></p>
-  <p>Contact : <a href="mailto:beyram.frigui@lyon.unicancer.fr">beyram.frigui@lyon.unicancer.fr</a></p>
+  <p>Contact : beyram.frigui@lyon.unicancer.fr</p>
 </div>
 
 <script>
-  function calculateF(m, p) {
-    if (m < 0) return 6;
-    if (m === 0) return 5;
-    if (m < 15000) return 1;
-    if (m <= 30000) return p ? 2 : 3;
+  function calculateF(m,p){
+    if(m<0)return 6;
+    if(m===0)return 5;
+    if(m<15000)return 1;
+    if(m<=30000)return p?2:3;
     return 4;
   }
 
-  function showError(message) {
-    const el = document.getElementById('formError');
-    el.textContent = message;
-    el.style.display = 'block';
-    document.getElementById('formSuccess').style.display = 'none';
+  function showError(msg){
+    formError.textContent=msg;
+    formError.style.display="block";
+    formSuccess.style.display="none";
   }
 
-  function showSuccess(message) {
-    const el = document.getElementById('formSuccess');
-    el.innerHTML = message;
-    el.style.display = 'block';
-    document.getElementById('formError').style.display = 'none';
+  function showSuccess(msg){
+    formSuccess.innerHTML=msg;
+    formSuccess.style.display="block";
+    formError.style.display="none";
   }
 
-  document.getElementById('carnotForm').addEventListener('submit', (e) => {
+  carnotForm.addEventListener("submit",e=>{
     e.preventDefault();
 
-    // ✅ récupération fiable
-    const a = document.getElementById('formA').value;
-    const b = document.getElementById('formB').value;
-    const c = document.getElementById('formC').value;
-    const d = document.getElementById('formD').value;
-    const ee = document.getElementById('formE').value;
-
-    // si rien choisi (le placeholder "Sélectionner…")
-    if (!a || !b || !c || !d || !ee) {
-      showError("❌ Merci de sélectionner A, B, C, D et E.");
+    if(!formA.value||!formB.value||!formC.value||!formD.value||!formE.value){
+      showError("Merci de sélectionner A, B, C, D et E.");
       return;
     }
 
-    const montant = parseFloat(document.getElementById('formMontant').value || '0');
-    const pme = document.getElementById('formPME').checked;
+    const f=calculateF(+formMontant.value||0,formPME.checked);
+    const code=`CT ${formA.value}${formB.value}${formC.value}${formD.value}${formE.value}${f}`;
 
-    const code = `CT ${a}${b}${c}${d}${ee}${calculateF(montant, pme)}`;
-
-    document.getElementById('generatedCode').textContent = code;
-    document.getElementById('codeBox').style.display = 'block';
-    showSuccess(`✅ <strong>Code généré :</strong> <strong>${code}</strong>`);
+    generatedCode.textContent=code;
+    codeBox.style.display="block";
+    showSuccess(`✅ Code généré : <strong>${code}</strong>`);
   });
+
+  copyBtn.onclick=async()=>{
+    await navigator.clipboard.writeText(generatedCode.textContent);
+    showSuccess("✅ Code copié");
+  };
+
+  resetBtn.onclick=()=>{
+    carnotForm.reset();
+    codeBox.style.display="none";
+    formError.style.display="none";
+    formSuccess.style.display="none";
+  };
+
+  pdfBtn.onclick=()=>window.print();
 </script>
 
 </body>
