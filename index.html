@@ -412,7 +412,7 @@
 
           <div class="form-group">
             <label>Intitulé Projet</label>
-            <input type="text" id="formIntitule" placeholder="Titre du projet" required />
+            <input type="text" id="formIntitule" placeholder="Titre du projet" />
           </div>
         </div>
 
@@ -607,10 +607,6 @@
       const ref = document.getElementById('formRef').value.trim();
       const intitule = document.getElementById('formIntitule').value.trim();
 
-      if (!intitule) {
-        showError("❌ Merci de remplir l’intitulé du projet.");
-        return;
-      }
 
 
       const a = parseInt(document.getElementById('formA').value, 10);
