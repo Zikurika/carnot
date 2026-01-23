@@ -93,7 +93,7 @@
     }
 
     .card-header {
-      margin-bottom: 30px;
+      margin-bottom: 26px;
       text-align: center;
     }
 
@@ -303,20 +303,9 @@
       .navbar-title { font-size: 16px; }
     }
 
-    /* ===============================
-       ✅ SEULE MODIF DEMANDÉE : ESPACEMENT A/B/C/D/E
-       (AUCUN CONTENU MODIFIÉ)
-       =============================== */
-
-    /* plus d’air global entre blocs */
-    .form-group { margin-bottom: 26px; }
-
-    /* plus d’espace entre les deux lignes (A/B puis C/D) */
-    .grid-2 { gap: 22px; }
-
-    /* et un peu plus d’air entre les champs dans un même bloc */
-    select { margin-top: 2px; }
-
+    /* ✅ ESPACEMENT A/B/C/D/E (VISUEL UNIQUEMENT) */
+    .grid-2 { gap: 22px; }         /* + d’air entre colonnes */
+    .form-group { margin-bottom: 28px; } /* + d’air entre blocs */
   </style>
 </head>
 
@@ -338,7 +327,7 @@
         <p class="subtitle">Le code Carnot est généré automatiquement à partir des éléments saisis</p>
       </div>
 
-      <!-- ✅ Bouton GÉNÉRER en HAUT (sans rien changer d’autre) -->
+      <!-- ✅ Bouton générer EN HAUT -->
       <button type="submit" form="carnotForm" style="margin-top: 0; margin-bottom: 18px;">
         ✓ Générer Code Carnot
       </button>
@@ -362,7 +351,6 @@
 
         <div class="section-header"><span>🏷️</span>Classification (A, B, C, D, E)</div>
 
-        <!-- ✅ CONTENU A/B/C/D/E INCHANGÉ (TES LISTES) -->
         <div class="grid-2">
           <div class="form-group">
             <label>Équipe Juridique (A)</label>
@@ -459,7 +447,7 @@
           </div>
         </div>
 
-        <!-- (Tu peux garder le bouton bas si tu veux, mais il n'est plus nécessaire) -->
+        <!-- (Optionnel) tu peux supprimer ce bouton bas si tu veux. -->
         <button type="submit" style="margin-top: 10px;">✓ Générer Code Carnot</button>
       </form>
 
@@ -469,7 +457,6 @@
 
         <div class="mini-actions">
           <button type="button" class="mini-btn secondary" id="copyBtn">📋 Copier</button>
-          <button type="button" class="mini-btn secondary" id="pdfBtn">📄 Exporter PDF</button>
           <button type="button" class="mini-btn" id="newBtn">➕ Nouveau</button>
         </div>
       </div>
@@ -511,14 +498,7 @@
       document.getElementById('formError').style.display = 'none';
     }
 
-    function safe(s) {
-      return (s || '')
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;');
-    }
-
-    // SUBMIT = générer (✅ inchangé)
+    // ✅ Génération du code (fiable)
     document.getElementById("carnotForm").addEventListener("submit", (event) => {
       event.preventDefault();
 
@@ -568,101 +548,6 @@
         const s = document.getElementById(id);
         if (s) s.selectedIndex = 0;
       });
-    });
-
-    // Export PDF (fiche propre + impression)
-    document.getElementById('pdfBtn').addEventListener('click', () => {
-      const code = document.getElementById('generatedCode').textContent.trim();
-      if (!code) {
-        showError("❌ Génère d’abord un code Carnot avant d’exporter en PDF.");
-        return;
-      }
-
-      const ref = (document.getElementById('formRef')?.value || '').trim();
-      const intitule = (document.getElementById('formIntitule')?.value || '').trim();
-      const montant = (document.getElementById('formMontant')?.value || '').trim();
-      const pme = document.getElementById('formPME')?.checked ? 'Oui' : 'Non';
-
-      const textA = document.getElementById('formA').selectedOptions[0]?.textContent || '';
-      const textB = document.getElementById('formB').selectedOptions[0]?.textContent || '';
-      const textC = document.getElementById('formC').selectedOptions[0]?.textContent || '';
-      const textD = document.getElementById('formD').selectedOptions[0]?.textContent || '';
-      const textE = document.getElementById('formE').selectedOptions[0]?.textContent || '';
-
-      const dateExport = new Date().toLocaleDateString('fr-FR');
-      const logoSrc = "./Logo-centre-leon-berard-lyon.png";
-
-      const html = `
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <title>Export Code Carnot</title>
-  <style>
-    @page { margin: 18mm; }
-    body { font-family: Arial, sans-serif; color:#222; }
-    .header { display:flex; align-items:center; gap:14px; border-bottom:2px solid #c4165a; padding-bottom:10px; margin-bottom:18px; }
-    .header img { height:42px; width:auto; }
-    .title { font-size:16px; font-weight:700; }
-    .sub { font-size:12px; color:#666; margin-top:2px; }
-    .card { border:1px solid #e0e0e0; border-radius:10px; padding:14px; margin-bottom:14px; }
-    .label { font-size:11px; color:#666; text-transform:uppercase; letter-spacing:.3px; margin-bottom:6px; }
-    .bigcode { font-size:28px; font-weight:800; color:#c4165a; letter-spacing:1px; }
-    table { width:100%; border-collapse:collapse; }
-    td { padding:8px 10px; border-bottom:1px solid #eee; font-size:12px; vertical-align:top; }
-    td.k { width:34%; color:#003d82; font-weight:700; }
-    .footer { margin-top:18px; font-size:10px; color:#777; }
-  </style>
-</head>
-<body>
-  <div class="header">
-    <img src="${logoSrc}" alt="CLB">
-    <div>
-      <div class="title">Centre Léon Bérard — Générateur Code Carnot</div>
-      <div class="sub">Export du ${safe(dateExport)}</div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="label">Code Carnot</div>
-    <div class="bigcode">${safe(code)}</div>
-  </div>
-
-  <div class="card">
-    <div class="label">Informations projet</div>
-    <table>
-      <tr><td class="k">Référence interne</td><td>${safe(ref || '-')}</td></tr>
-      <tr><td class="k">Intitulé</td><td>${safe(intitule || '-')}</td></tr>
-      <tr><td class="k">Montant (€)</td><td>${safe(montant || '-')}</td></tr>
-      <tr><td class="k">PME</td><td>${safe(pme)}</td></tr>
-    </table>
-  </div>
-
-  <div class="card">
-    <div class="label">Classification</div>
-    <table>
-      <tr><td class="k">A — Équipe juridique</td><td>${safe(textA || '-')}</td></tr>
-      <tr><td class="k">B — Type de contrat</td><td>${safe(textB || '-')}</td></tr>
-      <tr><td class="k">C — Pilotage</td><td>${safe(textC || '-')}</td></tr>
-      <tr><td class="k">D — Financeur</td><td>${safe(textD || '-')}</td></tr>
-      <tr><td class="k">E — Propriété</td><td>${safe(textE || '-')}</td></tr>
-    </table>
-  </div>
-
-  <div class="footer">
-    Pour toute question : beyram.frigui@lyon.unicancer.fr
-  </div>
-
-  <script>
-    window.onload = () => window.print();
-  </script>
-</body>
-</html>
-`;
-      const w = window.open('', '_blank');
-      w.document.open();
-      w.document.write(html);
-      w.document.close();
     });
   </script>
 </body>
