@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,10 +8,15 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
 
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
     :root {
       --clb-rose: #c4165a;
@@ -114,7 +120,10 @@
     }
 
     /* FORM */
-    .form-group { margin-bottom: 22px; }
+    .form-group {
+      margin-bottom: 22px;
+    }
+
     .form-group label {
       display: block;
       margin-bottom: 10px;
@@ -138,7 +147,9 @@
       transition: border-color .3s ease, box-shadow .3s ease;
     }
 
-    input:focus, select:focus, textarea:focus {
+    input:focus,
+    select:focus,
+    textarea:focus {
       outline: none;
       border-color: var(--clb-rose);
       box-shadow: 0 0 0 4px rgba(196, 22, 90, 0.08);
@@ -153,7 +164,10 @@
       background-position: right 16px center;
     }
 
-    textarea { resize: vertical; min-height: 110px; }
+    textarea {
+      resize: vertical;
+      min-height: 110px;
+    }
 
     .grid-2 {
       display: grid;
@@ -297,15 +311,34 @@
     }
 
     @media (max-width:768px) {
-      .grid-2 { grid-template-columns: 1fr; }
-      .card { padding: 28px 18px; }
-      h1 { font-size: 26px; }
-      .navbar-title { font-size: 16px; }
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+
+      .card {
+        padding: 28px 18px;
+      }
+
+      h1 {
+        font-size: 26px;
+      }
+
+      .navbar-title {
+        font-size: 16px;
+      }
     }
 
     /* ✅ ESPACEMENT A/B/C/D/E (VISUEL UNIQUEMENT) */
-    .grid-2 { gap: 22px; }         /* + d’air entre colonnes */
-    .form-group { margin-bottom: 28px; } /* + d’air entre blocs */
+    .grid-2 {
+      gap: 22px;
+    }
+
+    /* + d’air entre colonnes */
+    .form-group {
+      margin-bottom: 28px;
+    }
+
+    /* + d’air entre blocs */
   </style>
 </head>
 
@@ -447,8 +480,7 @@
           </div>
         </div>
 
-        <!-- (Optionnel) tu peux supprimer ce bouton bas si tu veux. -->
-        <button type="submit" style="margin-top: 10px;">✓ Générer Code Carnot</button>
+
       </form>
 
       <div id="codeBox" class="code-box">
@@ -544,11 +576,12 @@
       document.getElementById('formError').style.display = 'none';
       document.getElementById('formSuccess').style.display = 'none';
 
-      ['formA','formB','formC','formD','formE'].forEach(id => {
+      ['formA', 'formB', 'formC', 'formD', 'formE'].forEach(id => {
         const s = document.getElementById(id);
         if (s) s.selectedIndex = 0;
       });
     });
   </script>
 </body>
+
 </html>
