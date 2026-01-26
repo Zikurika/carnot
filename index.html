@@ -430,9 +430,9 @@
             <label>Pilotage Projet (C)</label>
             <select id="formC" required>
               <option value="" selected disabled>Sélectionner…</option>
-              <option value="1">DRCI promotion CLB Précoces</option>
-              <option value="2">DRCI Investigation Indus</option>
-              <option value="3">DRCI Investigation CLB</option>
+              <option value="1">DRCI Promotion CLB Précoces</option>
+              <option value="2">DRCI Investigation (Promotion Indus)-BEC</option>
+              <option value="3">DRCI Promotion CLB non précoce</option>
               <option value="4">Cellule projets / grant</option>
               <option value="5">EMS</option>
               <option value="6">Équipe de recherche</option>
@@ -447,15 +447,15 @@
             <label>Financeur (D)</label>
             <select id="formD" required>
               <option value="" selected disabled>Sélectionner…</option>
-              <option value="1">Académique / Public</option>
-              <option value="2">Association / Fondation</option>
+              <option value="1">Académique / Public (ANR/europe...)</option>
+              <option value="2">Association / Fondation indépendante </option>
               <option value="3">Fondation industrielle</option>
-              <option value="4">Industrie Pharma / Biotech</option>
-              <option value="5">Industrie Dispositif Médical</option>
-              <option value="6">Industrie Data / IT</option>
+              <option value="4">Industrie-Médicament / Pharma / Biotech</option>
+              <option value="5">Industrie-Dispositif Médical / Equipements / MedTech</option>
+              <option value="6">Industrie-Data / Logiciels / IT</option>
               <option value="7">Équipement recherche</option>
               <option value="8">CRO</option>
-              <option value="9">Privé autre</option>
+              <option value="9">Industriel / Privé autre</option>
             </select>
           </div>
         </div>
@@ -464,56 +464,77 @@
           <label>Propriété (E)</label>
           <select id="formE" required>
             <option value="" selected disabled>Sélectionner…</option>
-            <option value="1">CLB propriétaire données et résultats</option>
-            <option value="2">CLB propriétaire données</option>
-            <option value="3">CLB propriétaire résultats</option>
-            <option value="4">Publication uniquement</option>
-            <option value="5">Amélioration savoir-faire CLB</option>
-            <option value="6">Aucune valorisation CLB</option>
+
+            <option value="1">
+              CLB propriétaire ou copro données générées ET résultats
+            </option>
+
+            <option value="2">
+              CLB propriétaire ou copro données mais pas résultats
+            </option>
+
+            <option value="3">
+              CLB propriétaire ou copro résultats mais pas données
+            </option>
+
+            <option value="4">
+              Publication uniquement - CLB ni copropriétaire résultats ni copro données générées
+            </option>
+
+            <option value="5">
+              CLB propriétaire des améliorations de son savoir-faire / connaissances propres (avec ou sans publication)
+            </option>
+
+            <option value="6">
+              Aucune valorisation par le CLB
+            </option>
+
           </select>
         </div>
 
-        <div class="section-header"><span>💰</span>Montant</div>
-
-        <div class="grid-2">
-          <div class="form-group">
-            <label>Montant du Contrat (€)</label>
-            <input type="number" id="formMontant" value="0" required>
-          </div>
-
-          <div class="form-group">
-            <label>&nbsp;</label>
-            <div class="checkbox-group">
-              <input type="checkbox" id="formPME">
-              <label for="formPME">PME</label>
-            </div>
-          </div>
-        </div>
-
-
-      </form>
-      <div id="codeBox" class="code-box">
-        <h3>Code Carnot Généré</h3>
-        <div class="code" id="generatedCode"></div>
-
-        <div class="mini-actions">
-          <button type="button" class="mini-btn secondary" id="copyBtn">📋 Copier</button>
-          <button type="button" class="mini-btn" id="newBtn">➕ Nouveau</button>
-        </div>
-      </div>
-
-
-      <div id="codeBox" class="code-box">
-        <h3>Code Carnot Généré</h3>
-        <div class="code" id="generatedCode"></div>
-
-        <div class="mini-actions">
-          <button type="button" class="mini-btn secondary" id="copyBtn">📋 Copier</button>
-          <button type="button" class="mini-btn" id="newBtn">➕ Nouveau</button>
-        </div>
-      </div>
-
     </div>
+
+    <div class="section-header"><span>💰</span>Montant</div>
+
+    <div class="grid-2">
+      <div class="form-group">
+        <label>Montant du Contrat (€)</label>
+        <input type="number" id="formMontant" value="0" required>
+      </div>
+
+      <div class="form-group">
+        <label>&nbsp;</label>
+        <div class="checkbox-group">
+          <input type="checkbox" id="formPME">
+          <label for="formPME">PME</label>
+        </div>
+      </div>
+    </div>
+
+
+    </form>
+    <div id="codeBox" class="code-box">
+      <h3>Code Carnot Généré</h3>
+      <div class="code" id="generatedCode"></div>
+
+      <div class="mini-actions">
+        <button type="button" class="mini-btn secondary" id="copyBtn">📋 Copier</button>
+        <button type="button" class="mini-btn" id="newBtn">➕ Nouveau</button>
+      </div>
+    </div>
+
+
+    <div id="codeBox" class="code-box">
+      <h3>Code Carnot Généré</h3>
+      <div class="code" id="generatedCode"></div>
+
+      <div class="mini-actions">
+        <button type="button" class="mini-btn secondary" id="copyBtn">📋 Copier</button>
+        <button type="button" class="mini-btn" id="newBtn">➕ Nouveau</button>
+      </div>
+    </div>
+
+  </div>
   </div>
 
   <div class="footer">
