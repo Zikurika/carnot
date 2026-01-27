@@ -152,7 +152,7 @@
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap:22px;
     }
-    .grid-2 > *{ min-width:0; } /* évite les débordements */
+    .grid-2 > *{ min-width:0; }
 
     .checkbox-group{
       display:flex;
@@ -309,12 +309,10 @@
         <p class="subtitle">Le code Carnot est généré automatiquement à partir des éléments saisis</p>
       </div>
 
-      <!-- ✅ Bouton générer EN HAUT -->
       <button type="submit" form="carnotForm" style="margin-top: 0; margin-bottom: 18px;">
         ✓ Générer Code Carnot
       </button>
 
-      <!-- ✅ UN SEUL codeBox (id unique) -->
       <div id="codeBox" class="code-box">
         <h3>Code Carnot Généré</h3>
         <div class="code" id="generatedCode"></div>
@@ -380,8 +378,6 @@
             <label>Pilotage Projet (C)</label>
             <select id="formC" required>
               <option value="" selected disabled>Sélectionner…</option>
-
-              <!-- ✅ Nomenclature C EXACTE demandée -->
               <option value="1">DRCI promotion CLB Précoces</option>
               <option value="2">DRCI Investigation (Promotion Indus) - BEC</option>
               <option value="3">DRCI Promotion CLB non précoce</option>
@@ -430,7 +426,20 @@
         <div class="grid-2">
           <div class="form-group">
             <label>Montant du Contrat (€)</label>
-            <input type="number" id="formMontant" value="0" min="0" required>
+
+            <!-- ✅ MODIF: on autorise les valeurs négatives -->
+            <input
+              type="number"
+              id="formMontant"
+              value="0"
+              min="-999999999"
+              step="0.01"
+              required
+              placeholder="Ex: 12000, 25000, 0 ou -5000"
+            />
+            <small style="display:block; margin-top:8px; color:#666; font-size:12px;">
+              0 = sans échange financier • montant négatif = paiement par le CLB
+            </small>
           </div>
 
           <div class="form-group">
@@ -458,11 +467,20 @@
   </div>
 
   <script>
+    // ✅ Règles F demandées :
+    // 1 : < 15k€
+    // 2 : 15–30k€ payé par PME
+    // 3 : 15–30k€ hors PME
+    // 4 : > 30k€
+    // 5 : 0 = sans échange financier
+    // 6 : < 0 = paiement par le CLB
     function calculateF(montant, pme) {
+      if (Number.isNaN(montant)) montant = 0; // robuste
+
       if (montant < 0) return 6;
       if (montant === 0) return 5;
       if (montant < 15000) return 1;
-      if (montant >= 15000 && montant <= 30000) return pme ? 2 : 3;
+      if (montant <= 30000) return pme ? 2 : 3;
       return 4;
     }
 
@@ -480,7 +498,6 @@
       document.getElementById('formError').style.display = 'none';
     }
 
-    // ✅ Ajoute automatiquement l’étoile sur les labels des champs required
     function markRequiredFields() {
       document.querySelectorAll('.form-group').forEach(g => {
         if (g.querySelector('input[required], select[required], textarea[required]')) {
@@ -490,7 +507,6 @@
     }
     markRequiredFields();
 
-    // ✅ Génération du code
     document.getElementById("carnotForm").addEventListener("submit", (event) => {
       event.preventDefault();
 
@@ -505,8 +521,11 @@
         return;
       }
 
-      const montant = parseFloat(document.getElementById('formMontant').value || '0');
+      // ✅ MODIF: Number() gère bien -5000 et 0
+      const rawMontant = document.getElementById('formMontant').value;
+      const montant = Number(rawMontant);
       const pme = document.getElementById('formPME').checked;
+
       const f = calculateF(montant, pme);
 
       const code = `CT ${a}${b}${c}${d}${e}${f}`;
@@ -516,7 +535,6 @@
       showSuccess(`✅ <strong>Code généré :</strong> <strong>${code}</strong>`);
     });
 
-    // Copier
     document.getElementById('copyBtn').addEventListener('click', async () => {
       const code = document.getElementById('generatedCode').textContent.trim();
       if (!code) return;
@@ -529,7 +547,6 @@
       }
     });
 
-    // Nouveau / Réinitialiser
     document.getElementById('newBtn').addEventListener('click', () => {
       document.getElementById('carnotForm').reset();
       document.getElementById('codeBox').style.display = 'none';
