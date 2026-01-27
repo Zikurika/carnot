@@ -270,6 +270,108 @@
     .mini-btn.secondary{
       background:linear-gradient(135deg, var(--clb-blue) 0%, var(--clb-blue-light) 100%);
     }
+    .mini-btn.danger{
+      background:linear-gradient(135deg, #9a0d46 0%, #c0392b 100%);
+    }
+    .mini-btn.ghost{
+      background:linear-gradient(135deg, #6b7280 0%, #9ca3af 100%);
+    }
+
+    /* NEW: decomposition box */
+    .decomp-box{
+      margin-top:16px;
+      text-align:left;
+      background:#fff;
+      border:1px dashed var(--clb-border);
+      border-radius:10px;
+      padding:14px 16px;
+      display:none;
+    }
+    .decomp-title{
+      font-weight:900;
+      color:var(--clb-blue);
+      margin-bottom:10px;
+      font-size:13px;
+      text-transform:uppercase;
+      letter-spacing:0.6px;
+    }
+    .decomp-list{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:8px;
+      font-size:13px;
+      color:#333;
+    }
+    .pill{
+      display:inline-block;
+      padding:2px 8px;
+      border-radius:999px;
+      font-weight:900;
+      background:var(--clb-blue-pale);
+      border:1px solid var(--clb-blue-light);
+      margin-right:8px;
+    }
+
+    /* NEW: history */
+    .history{
+      margin-top:22px;
+      text-align:left;
+      background:#fff;
+      border:1px solid var(--clb-border);
+      border-radius:12px;
+      padding:16px;
+      display:none;
+    }
+    .history-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:12px;
+    }
+    .history-title{
+      font-weight:900;
+      color:var(--clb-blue);
+    }
+    .history-list{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      max-height:320px;
+      overflow:auto;
+      padding-right:6px;
+    }
+    .history-item{
+      border:1px solid var(--clb-border);
+      border-radius:10px;
+      padding:12px;
+      background:linear-gradient(135deg, #fff 0%, #fafafa 100%);
+    }
+    .history-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .history-code{
+      font-family:'Monaco','Courier New', monospace;
+      font-weight:900;
+      color:var(--clb-rose);
+      letter-spacing:1px;
+    }
+    .history-meta{
+      font-size:12px;
+      color:#666;
+      margin-top:6px;
+      line-height:1.4;
+    }
+    .history-actions{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
 
     /* FOOTER */
     .footer{
@@ -287,6 +389,7 @@
       .card{ padding:28px 18px; }
       h1{ font-size:26px; }
       .navbar-title{ font-size:16px; }
+      .code-box .code{ font-size:34px; }
     }
   </style>
 </head>
@@ -320,6 +423,24 @@
         <div class="mini-actions">
           <button type="button" class="mini-btn secondary" id="copyBtn">📋 Copier</button>
           <button type="button" class="mini-btn" id="newBtn">➕ Nouveau</button>
+        </div>
+
+        <!-- ✅ NEW: décomposition -->
+        <div id="decompBox" class="decomp-box">
+          <div class="decomp-title">Décomposition (A • B • C • D • E • F)</div>
+          <div class="decomp-list" id="decompList"></div>
+        </div>
+
+        <!-- ✅ NEW: historique -->
+        <div id="historyBox" class="history">
+          <div class="history-header">
+            <div class="history-title">Historique (tous les codes)</div>
+            <div class="history-actions">
+              <button type="button" class="mini-btn ghost" id="exportHistoryBtn">⬇️ Export TXT</button>
+              <button type="button" class="mini-btn danger" id="clearHistoryBtn">🗑️ Tout effacer</button>
+            </div>
+          </div>
+          <div class="history-list" id="historyList"></div>
         </div>
       </div>
 
@@ -426,8 +547,6 @@
         <div class="grid-2">
           <div class="form-group">
             <label>Montant du Contrat (€)</label>
-
-            <!-- ✅ MODIF: on autorise les valeurs négatives -->
             <input
               type="number"
               id="formMontant"
@@ -467,7 +586,7 @@
   </div>
 
   <script>
-    // ✅ Règles F demandées :
+    // ---------- F (montant) ----------
     // 1 : < 15k€
     // 2 : 15–30k€ payé par PME
     // 3 : 15–30k€ hors PME
@@ -475,13 +594,25 @@
     // 5 : 0 = sans échange financier
     // 6 : < 0 = paiement par le CLB
     function calculateF(montant, pme) {
-      if (Number.isNaN(montant)) montant = 0; // robuste
+      if (Number.isNaN(montant)) montant = 0;
 
       if (montant < 0) return 6;
       if (montant === 0) return 5;
       if (montant < 15000) return 1;
       if (montant <= 30000) return pme ? 2 : 3;
       return 4;
+    }
+
+    function labelF(f) {
+      switch (f) {
+        case 1: return "< 15 k€";
+        case 2: return "15–30 k€ payé par PME";
+        case 3: return "15–30 k€ hors PME";
+        case 4: return "> 30 k€";
+        case 5: return "0 — Sans échange financier";
+        case 6: return "< 0 — Paiement par le CLB";
+        default: return "";
+      }
     }
 
     function showError(msg) {
@@ -507,46 +638,244 @@
     }
     markRequiredFields();
 
+    // ---------- Helpers select (value + label) ----------
+    function getSelectValue(id) {
+      return document.getElementById(id).value;
+    }
+    function getSelectLabel(id) {
+      const s = document.getElementById(id);
+      const opt = s.options[s.selectedIndex];
+      return opt ? opt.textContent.trim() : "";
+    }
+
+    // ---------- Historique (localStorage) ----------
+    const STORAGE_KEY = "carnot_history_v1";
+
+    function loadHistory() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        const arr = raw ? JSON.parse(raw) : [];
+        return Array.isArray(arr) ? arr : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveHistory(items) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    }
+
+    function addToHistory(entry) {
+      const items = loadHistory();
+      items.unshift(entry); // dernier en haut
+      saveHistory(items);
+      renderHistory();
+    }
+
+    function removeFromHistory(index) {
+      const items = loadHistory();
+      items.splice(index, 1);
+      saveHistory(items);
+      renderHistory();
+    }
+
+    function clearHistory() {
+      saveHistory([]);
+      renderHistory();
+    }
+
+    function formatDateISO(d) {
+      // affichage simple (local)
+      const pad = (n) => String(n).padStart(2, "0");
+      return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+    }
+
+    async function copyText(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch {
+        return false;
+      }
+    }
+
+    function renderHistory() {
+      const box = document.getElementById("historyBox");
+      const list = document.getElementById("historyList");
+      const items = loadHistory();
+
+      if (!items.length) {
+        box.style.display = "none";
+        list.innerHTML = "";
+        return;
+      }
+
+      box.style.display = "block";
+      list.innerHTML = items.map((it, idx) => {
+        const meta = [
+          `A=${it.a} (${it.aLabel})`,
+          `B=${it.b} (${it.bLabel})`,
+          `C=${it.c} (${it.cLabel})`,
+          `D=${it.d} (${it.dLabel})`,
+          `E=${it.e} (${it.eLabel})`,
+          `F=${it.f} (${labelF(it.f)})`,
+          `Montant=${it.montant}`,
+          `PME=${it.pme ? "Oui" : "Non"}`,
+          it.formRef ? `Ref=${it.formRef}` : null,
+          it.formIntitule ? `Projet=${it.formIntitule}` : null,
+        ].filter(Boolean).join(" • ");
+
+        return `
+          <div class="history-item">
+            <div class="history-top">
+              <div>
+                <div class="history-code">${it.code}</div>
+                <div class="history-meta">${it.createdAt}</div>
+              </div>
+              <div class="history-actions">
+                <button type="button" class="mini-btn secondary" data-action="copy" data-idx="${idx}">📋 Copier</button>
+                <button type="button" class="mini-btn danger" data-action="delete" data-idx="${idx}">🗑️ Supprimer</button>
+              </div>
+            </div>
+            <div class="history-meta" style="margin-top:10px;">${meta}</div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // délégation d’évènements pour les boutons de l’historique
+    document.addEventListener("click", async (e) => {
+      const btn = e.target.closest("button[data-action]");
+      if (!btn) return;
+
+      const action = btn.getAttribute("data-action");
+      const idx = Number(btn.getAttribute("data-idx"));
+      const items = loadHistory();
+      const item = items[idx];
+      if (!item) return;
+
+      if (action === "copy") {
+        const ok = await copyText(item.code);
+        if (ok) showSuccess(`✅ <strong>Copié :</strong> ${item.code}`);
+        else showError("❌ Impossible de copier automatiquement. Copie manuellement.");
+      }
+
+      if (action === "delete") {
+        removeFromHistory(idx);
+        showSuccess("✅ Entrée supprimée de l'historique.");
+      }
+    });
+
+    document.getElementById("clearHistoryBtn").addEventListener("click", () => {
+      clearHistory();
+      showSuccess("✅ Historique effacé.");
+    });
+
+    document.getElementById("exportHistoryBtn").addEventListener("click", () => {
+      const items = loadHistory();
+      if (!items.length) return;
+
+      const lines = items.map((it) => {
+        return [
+          it.createdAt,
+          it.code,
+          `A=${it.a} ${it.aLabel}`,
+          `B=${it.b} ${it.bLabel}`,
+          `C=${it.c} ${it.cLabel}`,
+          `D=${it.d} ${it.dLabel}`,
+          `E=${it.e} ${it.eLabel}`,
+          `F=${it.f} ${labelF(it.f)}`,
+          `Montant=${it.montant}`,
+          `PME=${it.pme ? "Oui" : "Non"}`,
+          it.formRef ? `Ref=${it.formRef}` : "",
+          it.formIntitule ? `Projet=${it.formIntitule}` : ""
+        ].filter(Boolean).join(" | ");
+      });
+
+      const blob = new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "historique_codes_carnot.txt";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    // ---------- Génération ----------
     document.getElementById("carnotForm").addEventListener("submit", (event) => {
       event.preventDefault();
 
-      const a = document.getElementById('formA').value;
-      const b = document.getElementById('formB').value;
-      const c = document.getElementById('formC').value;
-      const d = document.getElementById('formD').value;
-      const e = document.getElementById('formE').value;
+      const a = getSelectValue('formA');
+      const b = getSelectValue('formB');
+      const c = getSelectValue('formC');
+      const d = getSelectValue('formD');
+      const eVal = getSelectValue('formE');
 
-      if (!a || !b || !c || !d || !e) {
+      if (!a || !b || !c || !d || !eVal) {
         showError("❌ Merci de sélectionner A, B, C, D et E.");
         return;
       }
 
-      // ✅ MODIF: Number() gère bien -5000 et 0
       const rawMontant = document.getElementById('formMontant').value;
       const montant = Number(rawMontant);
       const pme = document.getElementById('formPME').checked;
-
       const f = calculateF(montant, pme);
 
-      const code = `CT ${a}${b}${c}${d}${e}${f}`;
+      const code = `CT ${a}${b}${c}${d}${eVal}${f}`;
 
+      // Affichage code
       document.getElementById('generatedCode').textContent = code;
       document.getElementById('codeBox').style.display = 'block';
       showSuccess(`✅ <strong>Code généré :</strong> <strong>${code}</strong>`);
+
+      // ✅ Décomposition
+      const decompList = document.getElementById("decompList");
+      const decompBox = document.getElementById("decompBox");
+
+      const aLabel = getSelectLabel("formA");
+      const bLabel = getSelectLabel("formB");
+      const cLabel = getSelectLabel("formC");
+      const dLabel = getSelectLabel("formD");
+      const eLabel = getSelectLabel("formE");
+
+      decompList.innerHTML = `
+        <div><span class="pill">A=${a}</span> ${aLabel}</div>
+        <div><span class="pill">B=${b}</span> ${bLabel}</div>
+        <div><span class="pill">C=${c}</span> ${cLabel}</div>
+        <div><span class="pill">D=${d}</span> ${dLabel}</div>
+        <div><span class="pill">E=${eVal}</span> ${eLabel}</div>
+        <div><span class="pill">F=${f}</span> ${labelF(f)} (montant=${Number.isNaN(montant) ? 0 : montant}, PME=${pme ? "Oui" : "Non"})</div>
+      `;
+      decompBox.style.display = "block";
+
+      // ✅ Historique (persistant)
+      addToHistory({
+        code,
+        createdAt: formatDateISO(new Date()),
+        formRef: (document.getElementById("formRef").value || "").trim(),
+        formIntitule: (document.getElementById("formIntitule").value || "").trim(),
+        montant: Number.isNaN(montant) ? 0 : montant,
+        pme,
+        a, b, c, d,
+        e: eVal,
+        f,
+        aLabel, bLabel, cLabel, dLabel, eLabel
+      });
     });
 
+    // Copier (code principal)
     document.getElementById('copyBtn').addEventListener('click', async () => {
       const code = document.getElementById('generatedCode').textContent.trim();
       if (!code) return;
 
-      try {
-        await navigator.clipboard.writeText(code);
-        showSuccess(`✅ <strong>Copié :</strong> ${code}`);
-      } catch {
-        showError("❌ Impossible de copier automatiquement. Sélectionne le code et copie-le manuellement.");
-      }
+      const ok = await copyText(code);
+      if (ok) showSuccess(`✅ <strong>Copié :</strong> ${code}`);
+      else showError("❌ Impossible de copier automatiquement. Sélectionne le code et copie-le manuellement.");
     });
 
+    // Nouveau / Réinitialiser (ne touche PAS à l’historique)
     document.getElementById('newBtn').addEventListener('click', () => {
       document.getElementById('carnotForm').reset();
       document.getElementById('codeBox').style.display = 'none';
@@ -558,6 +887,9 @@
         if (s) s.selectedIndex = 0;
       });
     });
+
+    // afficher l’historique au chargement si déjà présent
+    renderHistory();
   </script>
 </body>
 </html>
