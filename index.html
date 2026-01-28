@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -34,7 +35,6 @@
       line-height:1.6;
     }
 
-    /* NAVBAR */
     .navbar{
       position:fixed; top:0; left:0; right:0;
       background:#fff;
@@ -59,7 +59,6 @@
       white-space:nowrap;
     }
 
-    /* CONTAINER */
     .container{
       max-width:800px;
       width:100%;
@@ -67,7 +66,6 @@
       padding:0 20px;
     }
 
-    /* CARD */
     .card{
       background:#fff;
       border-radius:12px;
@@ -99,7 +97,6 @@
       font-weight:400;
     }
 
-    /* FORM */
     .form-group{ margin-bottom:28px; }
     .form-group label{
       display:block;
@@ -109,7 +106,6 @@
       font-size:14px;
     }
 
-    /* required star */
     .form-group.required > label::after{
       content:" *";
       color:#e11d48;
@@ -173,7 +169,6 @@
       accent-color:var(--clb-rose);
     }
 
-    /* SECTION HEADERS */
     .section-header{
       font-size:16px;
       font-weight:800;
@@ -187,7 +182,6 @@
       gap:10px;
     }
 
-    /* BUTTONS */
     button{
       width:100%;
       padding:14px 28px;
@@ -206,7 +200,6 @@
       box-shadow:0 6px 20px rgba(196,22,90,0.35);
     }
 
-    /* ALERTS */
     .alert{
       padding:16px 20px;
       border-radius:8px;
@@ -226,7 +219,6 @@
       border-left-color:var(--clb-error);
     }
 
-    /* CODE BOX */
     .code-box{
       background:linear-gradient(135deg, var(--clb-blue-pale) 0%, #f0f8ff 100%);
       border:2px solid var(--clb-rose);
@@ -277,7 +269,6 @@
       background:linear-gradient(135deg, #6b7280 0%, #9ca3af 100%);
     }
 
-    /* decomposition box */
     .decomp-box{
       margin-top:16px;
       text-align:left;
@@ -312,7 +303,6 @@
       margin-right:8px;
     }
 
-    /* history */
     .history{
       margin-top:22px;
       text-align:left;
@@ -374,7 +364,6 @@
       flex-wrap:wrap;
     }
 
-    /* import modal */
     .modal-backdrop{
       position:fixed;
       inset:0;
@@ -416,16 +405,12 @@
       margin-top:12px;
     }
 
-    /* print area */
     .print-only{ display:none; }
-
     @media print{
-      body{ background:#fff; }
       .navbar, .container, .footer{ display:none !important; }
       .print-only{ display:block !important; }
     }
 
-    /* FOOTER */
     .footer{
       margin-top:60px;
       padding:28px 20px;
@@ -445,7 +430,6 @@
     }
   </style>
 
-  <!-- ✅ GOOGLE ANALYTICS -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3PCMW8QC2N"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -465,7 +449,7 @@
     </div>
   </nav>
 
-  <!-- PRINT LAYOUT -->
+  <!-- PRINT -->
   <div class="print-only" style="padding:28px;">
     <h2 style="color:#003d82; margin-bottom:10px;">Centre Léon Bérard — Code Carnot</h2>
     <div id="printBlock" style="border:1px solid #e0e0e0; border-radius:12px; padding:16px;"></div>
@@ -476,7 +460,6 @@
 
   <div class="container">
     <div class="card">
-
       <div class="card-header">
         <h1>Formulaire Carnot</h1>
         <p class="subtitle">Le code Carnot est généré automatiquement à partir des éléments saisis</p>
@@ -496,13 +479,11 @@
           <button type="button" class="mini-btn ghost" id="printBtn">🖨️ Imprimer / PDF</button>
         </div>
 
-        <!-- Décomposition -->
         <div id="decompBox" class="decomp-box">
           <div class="decomp-title">Décomposition (A • B • C • D • E • F)</div>
           <div class="decomp-list" id="decompList"></div>
         </div>
 
-        <!-- Historique -->
         <div id="historyBox" class="history">
           <div class="history-header">
             <div class="history-title">Historique (tous les codes)</div>
@@ -514,7 +495,6 @@
                 placeholder="Rechercher (code, ref, projet, A-F, montant...)"
                 style="flex:1; min-width:240px;"
               />
-
               <div class="history-actions">
                 <button type="button" class="mini-btn ghost" id="importBtn">📥 Import</button>
                 <button type="button" class="mini-btn ghost" id="exportHistoryBtn">⬇️ Export TXT</button>
@@ -522,8 +502,18 @@
               </div>
             </div>
           </div>
-
           <div class="history-list" id="historyList"></div>
+        </div>
+
+        <!-- ✅ STATS (5) -->
+        <div id="statsBox" class="history">
+          <div class="history-header" style="margin-bottom:10px;">
+            <div class="history-title">Statistiques (basées sur l’historique)</div>
+            <div class="history-actions">
+              <button type="button" class="mini-btn ghost" id="refreshStatsBtn">🔄 Rafraîchir</button>
+            </div>
+          </div>
+          <div id="statsContent" class="history-meta" style="font-size:13px; color:#333;"></div>
         </div>
       </div>
 
@@ -532,7 +522,6 @@
 
       <form id="carnotForm">
         <div class="section-header"><span>📝</span>Informations Projet</div>
-
         <div class="grid-2">
           <div class="form-group">
             <label>Référence Interne</label>
@@ -545,7 +534,6 @@
         </div>
 
         <div class="section-header"><span>🏷️</span>Classification (A, B, C, D, E)</div>
-
         <div class="grid-2">
           <div class="form-group">
             <label>Équipe Juridique (A)</label>
@@ -626,24 +614,14 @@
         </div>
 
         <div class="section-header"><span>💰</span>Montant</div>
-
         <div class="grid-2">
           <div class="form-group">
             <label>Montant du Contrat (€)</label>
-            <input
-              type="number"
-              id="formMontant"
-              value="0"
-              min="-999999999"
-              step="0.01"
-              required
-              placeholder="Ex: 12000, 25000, 0 ou -5000"
-            />
+            <input type="number" id="formMontant" value="0" min="-999999999" step="0.01" required />
             <small style="display:block; margin-top:8px; color:#666; font-size:12px;">
               0 = sans échange financier • montant négatif = paiement par le CLB
             </small>
           </div>
-
           <div class="form-group">
             <label>&nbsp;</label>
             <div class="checkbox-group">
@@ -672,8 +650,7 @@
   <div id="importBackdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="importTitle">
     <div class="modal">
       <h4 id="importTitle">Importer une liste</h4>
-      <p>Colle une liste (1 entrée par ligne). Chaque ligne peut être un code (ex: <strong>CT 123456</strong>) ou du texte libre.
-        Les doublons (même code) seront regroupés automatiquement.</p>
+      <p>Colle une liste (1 entrée par ligne). Les doublons (même code) seront regroupés automatiquement.</p>
       <textarea id="importText" placeholder="CT 123456
 CT 111222
 ..."></textarea>
@@ -685,7 +662,6 @@ CT 111222
   </div>
 
   <script>
-    // ---------- F (montant) ----------
     function calculateF(montant, pme) {
       if (Number.isNaN(montant)) montant = 0;
       if (montant < 0) return 6;
@@ -730,18 +706,14 @@ CT 111222
     }
     markRequiredFields();
 
-    // ---------- Helpers select (value + label) ----------
-    function getSelectValue(id) {
-      return document.getElementById(id).value;
-    }
+    function getSelectValue(id) { return document.getElementById(id).value; }
     function getSelectLabel(id) {
       const s = document.getElementById(id);
       const opt = s.options[s.selectedIndex];
       return opt ? opt.textContent.trim() : "";
     }
 
-    // ---------- Historique (localStorage) ----------
-    const STORAGE_KEY = "carnot_history_v2"; // v2: ajoute count + pinned
+    const STORAGE_KEY = "carnot_history_v2";
 
     function loadHistory() {
       try {
@@ -752,10 +724,7 @@ CT 111222
         return [];
       }
     }
-
-    function saveHistory(items) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
-    }
+    function saveHistory(items) { localStorage.setItem(STORAGE_KEY, JSON.stringify(items)); }
 
     function formatDateISO(d) {
       const pad = (n) => String(n).padStart(2, "0");
@@ -763,35 +732,25 @@ CT 111222
     }
 
     async function copyText(text) {
-      try {
-        await navigator.clipboard.writeText(text);
-        return true;
-      } catch {
-        return false;
-      }
+      try { await navigator.clipboard.writeText(text); return true; }
+      catch { return false; }
     }
 
-    // ---------- Dédup + compteur ----------
     function buildDedupeKey(entry) {
-      // clé stable pour regrouper : code seul (sans espaces multiples)
       return (entry.code || "").replace(/\s+/g, " ").trim().toUpperCase();
     }
 
     function addToHistory(entry) {
       const items = loadHistory();
       const key = buildDedupeKey(entry);
-
-      // chercher doublon
       const idx = items.findIndex(it => buildDedupeKey(it) === key);
 
       if (idx >= 0) {
-        // si doublon : on incrémente count et on remonte en haut
         const existing = items[idx];
         existing.count = (existing.count || 1) + 1;
-        existing.createdAt = entry.createdAt || existing.createdAt; // met à jour date dernière génération
+        existing.createdAt = entry.createdAt || existing.createdAt;
         existing.lastSeenAt = entry.createdAt || existing.lastSeenAt || existing.createdAt;
 
-        // si l'entrée importée/générée contient des infos plus complètes, on complète
         const fields = ["formRef","formIntitule","montant","pme","a","b","c","d","e","f","aLabel","bLabel","cLabel","dLabel","eLabel"];
         fields.forEach(f => {
           if ((existing[f] === undefined || existing[f] === "" || existing[f] === null) && entry[f] !== undefined && entry[f] !== "") {
@@ -808,11 +767,11 @@ CT 111222
         items.unshift(entry);
       }
 
-      // Tri: épinglés en haut, puis reste
       items.sort((x, y) => (y.pinned === x.pinned) ? 0 : (y.pinned ? 1 : -1));
 
       saveHistory(items);
       renderHistory();
+      renderStats(); // ✅ refresh stats automatically
     }
 
     function removeFromHistory(index) {
@@ -820,11 +779,13 @@ CT 111222
       items.splice(index, 1);
       saveHistory(items);
       renderHistory();
+      renderStats();
     }
 
     function clearHistory() {
       saveHistory([]);
       renderHistory();
+      renderStats();
     }
 
     function normalizeSearch(s) {
@@ -839,13 +800,10 @@ CT 111222
     function matchSearch(item, q) {
       if (!q) return true;
       const hay = [
-        item.code,
-        item.formRef,
-        item.formIntitule,
+        item.code, item.formRef, item.formIntitule,
         item.a, item.b, item.c, item.d, item.e, item.f,
         item.aLabel, item.bLabel, item.cLabel, item.dLabel, item.eLabel,
-        item.montant,
-        item.pme ? "pme oui" : "pme non",
+        item.montant, item.pme ? "pme oui" : "pme non"
       ].join(" | ");
       return normalizeSearch(hay).includes(normalizeSearch(q));
     }
@@ -872,7 +830,7 @@ CT 111222
       }
 
       list.innerHTML = filtered.map((it) => {
-        const idx = items.indexOf(it); // index dans la liste originale
+        const idx = items.indexOf(it);
         const meta = [
           it.a !== undefined ? `A=${it.a} (${it.aLabel || ""})` : null,
           it.b !== undefined ? `B=${it.b} (${it.bLabel || ""})` : null,
@@ -911,12 +869,10 @@ CT 111222
       }).join("");
     }
 
-    // Search live
     document.addEventListener("input", (e) => {
       if (e.target && e.target.id === "historySearch") renderHistory();
     });
 
-    // délégation d’évènements pour les boutons de l’historique
     document.addEventListener("click", async (e) => {
       const btn = e.target.closest("button[data-action]");
       if (!btn) return;
@@ -941,10 +897,10 @@ CT 111222
       if (action === "pin") {
         item.pinned = !item.pinned;
         items[idx] = item;
-        // tri: épinglés en haut
         items.sort((x, y) => (y.pinned === x.pinned) ? 0 : (y.pinned ? 1 : -1));
         saveHistory(items);
         renderHistory();
+        renderStats();
         showSuccess(item.pinned ? "✅ Entrée épinglée." : "✅ Entrée désépinglée.");
       }
     });
@@ -997,9 +953,7 @@ CT 111222
       importBackdrop.style.display = "flex";
       importText.focus();
     }
-    function closeImport() {
-      importBackdrop.style.display = "none";
-    }
+    function closeImport() { importBackdrop.style.display = "none"; }
 
     document.getElementById("importBtn").addEventListener("click", openImport);
     document.getElementById("importCancel").addEventListener("click", closeImport);
@@ -1008,16 +962,10 @@ CT 111222
     });
 
     function parseImportedLines(raw) {
-      const lines = raw
-        .split(/\r?\n/)
-        .map(l => l.trim())
-        .filter(l => l.length > 0);
-
+      const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
       return lines.map(l => {
-        // si la ligne ressemble à un code Carnot, on normalise "CT 123456"
         const m = l.match(/^(ct)\s*([0-9]{6})$/i) || l.match(/^(ct)\s*([0-9]{1,})$/i);
-        const code = m ? `CT ${m[2]}` : l;
-        return code;
+        return m ? `CT ${m[2]}` : l;
       });
     }
 
@@ -1031,20 +979,19 @@ CT 111222
       }
 
       const now = formatDateISO(new Date());
-
-      // on ajoute chaque entrée : dédup automatique regroupe les identiques
-      codes.forEach(code => {
-        addToHistory({
-          code,
-          createdAt: now
-        });
-      });
+      codes.forEach(code => addToHistory({ code, createdAt: now }));
 
       closeImport();
       showSuccess(`✅ Import terminé : ${codes.length} ligne(s) importée(s) (doublons regroupés).`);
     });
 
-    // ---------- Impression / PDF ----------
+    // ---------- Print ----------
+    function escapeHtml(s) {
+      return (s || "").replace(/[&<>"']/g, (c) => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+      }[c]));
+    }
+
     function renderPrintBlock(entry) {
       const lines = [];
       lines.push(`<div style="font-size:18px; font-weight:900; color:#c4165a; font-family:Monaco, monospace;">${entry.code}</div>`);
@@ -1055,12 +1002,6 @@ CT 111222
       if (entry.pme !== undefined) lines.push(`<div><strong>PME :</strong> ${entry.pme ? "Oui" : "Non"}</div>`);
       lines.push(`<div style="margin-top:10px; font-size:12px; color:#666;">${escapeHtml(entry.createdAt || "")}</div>`);
       return lines.join("");
-    }
-
-    function escapeHtml(s) {
-      return (s || "").replace(/[&<>"']/g, (c) => ({
-        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
-      }[c]));
     }
 
     document.getElementById("printBtn").addEventListener("click", () => {
@@ -1075,7 +1016,109 @@ CT 111222
       window.print();
     });
 
-    // ---------- Génération ----------
+    // ---------- ✅ STATS (5) ----------
+    function sumCounts(items) {
+      return items.reduce((acc, it) => acc + (it.count && it.count > 0 ? it.count : 1), 0);
+    }
+    function topN(map, n=3) {
+      return Object.entries(map).sort((a,b) => b[1]-a[1]).slice(0,n);
+    }
+    function fmtPct(part, total) {
+      if (!total) return "0%";
+      return `${Math.round((part / total) * 100)}%`;
+    }
+
+    function renderStats() {
+      const box = document.getElementById("statsBox");
+      const content = document.getElementById("statsContent");
+      const items = loadHistory();
+
+      if (!items.length) {
+        box.style.display = "none";
+        content.innerHTML = "";
+        return;
+      }
+
+      const totalEvents = sumCounts(items);   // pondéré (count)
+      const distinctCodes = items.length;
+      const pinned = items.filter(i => i.pinned).length;
+
+      let pmeYes = 0, pmeNo = 0;
+      const fDist = {};      // F -> count
+      const abcDist = {};    // "A-B-C" -> count
+      const amountDist = { neg:0, zero:0, lt15:0, mid:0, gt30:0, unknown:0 };
+
+      items.forEach(it => {
+        const w = (it.count && it.count > 0) ? it.count : 1;
+
+        if (it.pme === true) pmeYes += w;
+        else if (it.pme === false) pmeNo += w;
+
+        if (it.f !== undefined && it.f !== null && it.f !== "") {
+          fDist[it.f] = (fDist[it.f] || 0) + w;
+        }
+
+        if (it.a !== undefined && it.b !== undefined && it.c !== undefined) {
+          const k = `${it.a}-${it.b}-${it.c}`;
+          abcDist[k] = (abcDist[k] || 0) + w;
+        }
+
+        const m = (it.montant !== undefined && it.montant !== null) ? Number(it.montant) : NaN;
+        if (!Number.isFinite(m)) { amountDist.unknown += w; return; }
+        if (m < 0) amountDist.neg += w;
+        else if (m === 0) amountDist.zero += w;
+        else if (m < 15000) amountDist.lt15 += w;
+        else if (m <= 30000) amountDist.mid += w;
+        else amountDist.gt30 += w;
+      });
+
+      const topABC = topN(abcDist, 3);
+      const topF = topN(fDist, 6);
+
+      const lines = [];
+
+      lines.push(`<div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px;">
+        <span style="padding:6px 10px; border:1px solid #e0e0e0; border-radius:999px; font-weight:900;">Total générations/imports : ${totalEvents}</span>
+        <span style="padding:6px 10px; border:1px solid #e0e0e0; border-radius:999px; font-weight:900;">Codes distincts : ${distinctCodes}</span>
+        <span style="padding:6px 10px; border:1px solid #e0e0e0; border-radius:999px; font-weight:900;">Épinglés : ${pinned}</span>
+      </div>`);
+
+      lines.push(`<div style="margin-top:6px;">
+        <strong>PME :</strong>
+        Oui ${pmeYes} (${fmtPct(pmeYes, totalEvents)}) •
+        Non ${pmeNo} (${fmtPct(pmeNo, totalEvents)})
+      </div>`);
+
+      lines.push(`<div style="margin-top:10px;">
+        <strong>Répartition par F :</strong><br/>
+        ${topF.length ? topF.map(([k,v]) => `F=${k} : ${v} (${fmtPct(v, totalEvents)})`).join(" • ") : "—"}
+      </div>`);
+
+      lines.push(`<div style="margin-top:10px;">
+        <strong>Top 3 combinaisons A-B-C :</strong><br/>
+        ${topABC.length ? topABC.map(([k,v]) => `${k} : ${v} (${fmtPct(v, totalEvents)})`).join("<br/>") : "—"}
+      </div>`);
+
+      lines.push(`<div style="margin-top:10px;">
+        <strong>Montants (classes) :</strong><br/>
+        <span>⟂ &lt;0 : ${amountDist.neg} (${fmtPct(amountDist.neg, totalEvents)})</span> •
+        <span>0 : ${amountDist.zero} (${fmtPct(amountDist.zero, totalEvents)})</span> •
+        <span>&lt;15k : ${amountDist.lt15} (${fmtPct(amountDist.lt15, totalEvents)})</span><br/>
+        <span>15–30k : ${amountDist.mid} (${fmtPct(amountDist.mid, totalEvents)})</span> •
+        <span>&gt;30k : ${amountDist.gt30} (${fmtPct(amountDist.gt30, totalEvents)})</span> •
+        <span>Inconnu : ${amountDist.unknown} (${fmtPct(amountDist.unknown, totalEvents)})</span>
+      </div>`);
+
+      box.style.display = "block";
+      content.innerHTML = lines.join("");
+    }
+
+    document.getElementById("refreshStatsBtn").addEventListener("click", () => {
+      renderStats();
+      showSuccess("✅ Statistiques rafraîchies.");
+    });
+
+    // ---------- Generate ----------
     document.getElementById("carnotForm").addEventListener("submit", (event) => {
       event.preventDefault();
 
@@ -1097,14 +1140,9 @@ CT 111222
 
       const code = `CT ${a}${b}${c}${d}${eVal}${f}`;
 
-      // Affichage code
       document.getElementById('generatedCode').textContent = code;
       document.getElementById('codeBox').style.display = 'block';
       showSuccess(`✅ <strong>Code généré :</strong> <strong>${code}</strong>`);
-
-      // Décomposition
-      const decompList = document.getElementById("decompList");
-      const decompBox = document.getElementById("decompBox");
 
       const aLabel = getSelectLabel("formA");
       const bLabel = getSelectLabel("formB");
@@ -1112,7 +1150,7 @@ CT 111222
       const dLabel = getSelectLabel("formD");
       const eLabel = getSelectLabel("formE");
 
-      decompList.innerHTML = `
+      document.getElementById("decompList").innerHTML = `
         <div><span class="pill">A=${a}</span> ${aLabel}</div>
         <div><span class="pill">B=${b}</span> ${bLabel}</div>
         <div><span class="pill">C=${c}</span> ${cLabel}</div>
@@ -1120,9 +1158,8 @@ CT 111222
         <div><span class="pill">E=${eVal}</span> ${eLabel}</div>
         <div><span class="pill">F=${f}</span> ${labelF(f)} (montant=${Number.isNaN(montant) ? 0 : montant}, PME=${pme ? "Oui" : "Non"})</div>
       `;
-      decompBox.style.display = "block";
+      document.getElementById("decompBox").style.display = "block";
 
-      // Historique (persistant) + dédup
       addToHistory({
         code,
         createdAt: formatDateISO(new Date()),
@@ -1137,7 +1174,6 @@ CT 111222
       });
     });
 
-    // Copier (code principal)
     document.getElementById('copyBtn').addEventListener('click', async () => {
       const code = document.getElementById('generatedCode').textContent.trim();
       if (!code) return;
@@ -1147,7 +1183,6 @@ CT 111222
       else showError("❌ Impossible de copier automatiquement. Sélectionne le code et copie-le manuellement.");
     });
 
-    // Nouveau / Réinitialiser (ne touche PAS à l’historique)
     document.getElementById('newBtn').addEventListener('click', () => {
       document.getElementById('carnotForm').reset();
       document.getElementById('codeBox').style.display = 'none';
@@ -1160,8 +1195,10 @@ CT 111222
       });
     });
 
-    // afficher l’historique au chargement si déjà présent
+    // init
     renderHistory();
+    renderStats();
   </script>
 </body>
 </html>
+```
