@@ -277,7 +277,7 @@
       background:linear-gradient(135deg, #6b7280 0%, #9ca3af 100%);
     }
 
-    /* NEW: decomposition box */
+    /* decomposition box */
     .decomp-box{
       margin-top:16px;
       text-align:left;
@@ -312,7 +312,7 @@
       margin-right:8px;
     }
 
-    /* NEW: history */
+    /* history */
     .history{
       margin-top:22px;
       text-align:left;
@@ -324,7 +324,7 @@
     }
     .history-header{
       display:flex;
-      align-items:center;
+      align-items:flex-start;
       justify-content:space-between;
       gap:12px;
       flex-wrap:wrap;
@@ -333,6 +333,7 @@
     .history-title{
       font-weight:900;
       color:var(--clb-blue);
+      white-space:nowrap;
     }
     .history-list{
       display:flex;
@@ -373,6 +374,57 @@
       flex-wrap:wrap;
     }
 
+    /* import modal */
+    .modal-backdrop{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.35);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:2000;
+    }
+    .modal{
+      width:min(720px, 100%);
+      background:#fff;
+      border:1px solid var(--clb-border);
+      border-radius:14px;
+      box-shadow:0 10px 30px rgba(0,0,0,0.18);
+      padding:18px;
+    }
+    .modal h4{
+      margin:0 0 10px 0;
+      color:var(--clb-blue);
+      font-weight:900;
+    }
+    .modal p{
+      margin:0 0 12px 0;
+      color:#555;
+      font-size:13px;
+    }
+    .modal textarea{
+      min-height:180px;
+      font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size:13px;
+    }
+    .modal-actions{
+      display:flex;
+      gap:10px;
+      justify-content:flex-end;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+
+    /* print area */
+    .print-only{ display:none; }
+
+    @media print{
+      body{ background:#fff; }
+      .navbar, .container, .footer{ display:none !important; }
+      .print-only{ display:block !important; }
+    }
+
     /* FOOTER */
     .footer{
       margin-top:60px;
@@ -392,13 +444,13 @@
       .code-box .code{ font-size:34px; }
     }
   </style>
+
   <!-- ✅ GOOGLE ANALYTICS -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3PCMW8QC2N"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-
     gtag('config', 'G-3PCMW8QC2N');
   </script>
 </head>
@@ -412,6 +464,15 @@
       <div class="navbar-title">Générateur Code Carnot</div>
     </div>
   </nav>
+
+  <!-- PRINT LAYOUT -->
+  <div class="print-only" style="padding:28px;">
+    <h2 style="color:#003d82; margin-bottom:10px;">Centre Léon Bérard — Code Carnot</h2>
+    <div id="printBlock" style="border:1px solid #e0e0e0; border-radius:12px; padding:16px;"></div>
+    <p style="margin-top:10px; color:#666; font-size:12px;">
+      Imprimé le <span id="printDate"></span>
+    </p>
+  </div>
 
   <div class="container">
     <div class="card">
@@ -432,23 +493,36 @@
         <div class="mini-actions">
           <button type="button" class="mini-btn secondary" id="copyBtn">📋 Copier</button>
           <button type="button" class="mini-btn" id="newBtn">➕ Nouveau</button>
+          <button type="button" class="mini-btn ghost" id="printBtn">🖨️ Imprimer / PDF</button>
         </div>
 
-        <!-- ✅ NEW: décomposition -->
+        <!-- Décomposition -->
         <div id="decompBox" class="decomp-box">
           <div class="decomp-title">Décomposition (A • B • C • D • E • F)</div>
           <div class="decomp-list" id="decompList"></div>
         </div>
 
-        <!-- ✅ NEW: historique -->
+        <!-- Historique -->
         <div id="historyBox" class="history">
           <div class="history-header">
             <div class="history-title">Historique (tous les codes)</div>
-            <div class="history-actions">
-              <button type="button" class="mini-btn ghost" id="exportHistoryBtn">⬇️ Export TXT</button>
-              <button type="button" class="mini-btn danger" id="clearHistoryBtn">🗑️ Tout effacer</button>
+
+            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; width:100%;">
+              <input
+                type="text"
+                id="historySearch"
+                placeholder="Rechercher (code, ref, projet, A-F, montant...)"
+                style="flex:1; min-width:240px;"
+              />
+
+              <div class="history-actions">
+                <button type="button" class="mini-btn ghost" id="importBtn">📥 Import</button>
+                <button type="button" class="mini-btn ghost" id="exportHistoryBtn">⬇️ Export TXT</button>
+                <button type="button" class="mini-btn danger" id="clearHistoryBtn">🗑️ Tout effacer</button>
+              </div>
             </div>
           </div>
+
           <div class="history-list" id="historyList"></div>
         </div>
       </div>
@@ -594,17 +668,26 @@
     <p style="margin-top: 10px;">© 2024 - Tous droits réservés.</p>
   </div>
 
+  <!-- Import modal -->
+  <div id="importBackdrop" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="importTitle">
+    <div class="modal">
+      <h4 id="importTitle">Importer une liste</h4>
+      <p>Colle une liste (1 entrée par ligne). Chaque ligne peut être un code (ex: <strong>CT 123456</strong>) ou du texte libre.
+        Les doublons (même code) seront regroupés automatiquement.</p>
+      <textarea id="importText" placeholder="CT 123456
+CT 111222
+..."></textarea>
+      <div class="modal-actions">
+        <button type="button" class="mini-btn ghost" id="importCancel">Annuler</button>
+        <button type="button" class="mini-btn secondary" id="importConfirm">Importer</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     // ---------- F (montant) ----------
-    // 1 : < 15k€
-    // 2 : 15–30k€ payé par PME
-    // 3 : 15–30k€ hors PME
-    // 4 : > 30k€
-    // 5 : 0 = sans échange financier
-    // 6 : < 0 = paiement par le CLB
     function calculateF(montant, pme) {
       if (Number.isNaN(montant)) montant = 0;
-
       if (montant < 0) return 6;
       if (montant === 0) return 5;
       if (montant < 15000) return 1;
@@ -658,7 +741,7 @@
     }
 
     // ---------- Historique (localStorage) ----------
-    const STORAGE_KEY = "carnot_history_v1";
+    const STORAGE_KEY = "carnot_history_v2"; // v2: ajoute count + pinned
 
     function loadHistory() {
       try {
@@ -674,9 +757,60 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
     }
 
+    function formatDateISO(d) {
+      const pad = (n) => String(n).padStart(2, "0");
+      return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+    }
+
+    async function copyText(text) {
+      try {
+        await navigator.clipboard.writeText(text);
+        return true;
+      } catch {
+        return false;
+      }
+    }
+
+    // ---------- Dédup + compteur ----------
+    function buildDedupeKey(entry) {
+      // clé stable pour regrouper : code seul (sans espaces multiples)
+      return (entry.code || "").replace(/\s+/g, " ").trim().toUpperCase();
+    }
+
     function addToHistory(entry) {
       const items = loadHistory();
-      items.unshift(entry); // dernier en haut
+      const key = buildDedupeKey(entry);
+
+      // chercher doublon
+      const idx = items.findIndex(it => buildDedupeKey(it) === key);
+
+      if (idx >= 0) {
+        // si doublon : on incrémente count et on remonte en haut
+        const existing = items[idx];
+        existing.count = (existing.count || 1) + 1;
+        existing.createdAt = entry.createdAt || existing.createdAt; // met à jour date dernière génération
+        existing.lastSeenAt = entry.createdAt || existing.lastSeenAt || existing.createdAt;
+
+        // si l'entrée importée/générée contient des infos plus complètes, on complète
+        const fields = ["formRef","formIntitule","montant","pme","a","b","c","d","e","f","aLabel","bLabel","cLabel","dLabel","eLabel"];
+        fields.forEach(f => {
+          if ((existing[f] === undefined || existing[f] === "" || existing[f] === null) && entry[f] !== undefined && entry[f] !== "") {
+            existing[f] = entry[f];
+          }
+        });
+
+        items.splice(idx, 1);
+        items.unshift(existing);
+      } else {
+        entry.count = entry.count || 1;
+        entry.pinned = !!entry.pinned;
+        entry.lastSeenAt = entry.createdAt || formatDateISO(new Date());
+        items.unshift(entry);
+      }
+
+      // Tri: épinglés en haut, puis reste
+      items.sort((x, y) => (y.pinned === x.pinned) ? 0 : (y.pinned ? 1 : -1));
+
       saveHistory(items);
       renderHistory();
     }
@@ -693,25 +827,36 @@
       renderHistory();
     }
 
-    function formatDateISO(d) {
-      // affichage simple (local)
-      const pad = (n) => String(n).padStart(2, "0");
-      return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+    function normalizeSearch(s) {
+      return (s || "")
+        .toString()
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim();
     }
 
-    async function copyText(text) {
-      try {
-        await navigator.clipboard.writeText(text);
-        return true;
-      } catch {
-        return false;
-      }
+    function matchSearch(item, q) {
+      if (!q) return true;
+      const hay = [
+        item.code,
+        item.formRef,
+        item.formIntitule,
+        item.a, item.b, item.c, item.d, item.e, item.f,
+        item.aLabel, item.bLabel, item.cLabel, item.dLabel, item.eLabel,
+        item.montant,
+        item.pme ? "pme oui" : "pme non",
+      ].join(" | ");
+      return normalizeSearch(hay).includes(normalizeSearch(q));
     }
 
     function renderHistory() {
       const box = document.getElementById("historyBox");
       const list = document.getElementById("historyList");
       const items = loadHistory();
+      const q = document.getElementById("historySearch") ? document.getElementById("historySearch").value : "";
+
+      const filtered = items.filter(it => matchSearch(it, q));
 
       if (!items.length) {
         box.style.display = "none";
@@ -720,28 +865,42 @@
       }
 
       box.style.display = "block";
-      list.innerHTML = items.map((it, idx) => {
+
+      if (!filtered.length) {
+        list.innerHTML = `<div style="color:#666; font-size:13px; padding:10px;">Aucun résultat pour « <strong>${q}</strong> »</div>`;
+        return;
+      }
+
+      list.innerHTML = filtered.map((it) => {
+        const idx = items.indexOf(it); // index dans la liste originale
         const meta = [
-          `A=${it.a} (${it.aLabel})`,
-          `B=${it.b} (${it.bLabel})`,
-          `C=${it.c} (${it.cLabel})`,
-          `D=${it.d} (${it.dLabel})`,
-          `E=${it.e} (${it.eLabel})`,
-          `F=${it.f} (${labelF(it.f)})`,
-          `Montant=${it.montant}`,
-          `PME=${it.pme ? "Oui" : "Non"}`,
+          it.a !== undefined ? `A=${it.a} (${it.aLabel || ""})` : null,
+          it.b !== undefined ? `B=${it.b} (${it.bLabel || ""})` : null,
+          it.c !== undefined ? `C=${it.c} (${it.cLabel || ""})` : null,
+          it.d !== undefined ? `D=${it.d} (${it.dLabel || ""})` : null,
+          it.e !== undefined ? `E=${it.e} (${it.eLabel || ""})` : null,
+          it.f !== undefined ? `F=${it.f} (${labelF(it.f)})` : null,
+          it.montant !== undefined ? `Montant=${it.montant}` : null,
+          it.pme !== undefined ? `PME=${it.pme ? "Oui" : "Non"}` : null,
           it.formRef ? `Ref=${it.formRef}` : null,
           it.formIntitule ? `Projet=${it.formIntitule}` : null,
         ].filter(Boolean).join(" • ");
+
+        const badge = it.count && it.count > 1
+          ? `<span style="font-size:12px; font-weight:900; background:#fff; border:1px solid #e0e0e0; padding:2px 8px; border-radius:999px;">×${it.count}</span>`
+          : "";
+
+        const pin = it.pinned ? "📌" : "📍";
 
         return `
           <div class="history-item">
             <div class="history-top">
               <div>
-                <div class="history-code">${it.code}</div>
-                <div class="history-meta">${it.createdAt}</div>
+                <div class="history-code">${it.code} ${badge}</div>
+                <div class="history-meta">${it.createdAt || ""}</div>
               </div>
               <div class="history-actions">
+                <button type="button" class="mini-btn ghost" data-action="pin" data-idx="${idx}">${pin}</button>
                 <button type="button" class="mini-btn secondary" data-action="copy" data-idx="${idx}">📋 Copier</button>
                 <button type="button" class="mini-btn danger" data-action="delete" data-idx="${idx}">🗑️ Supprimer</button>
               </div>
@@ -751,6 +910,11 @@
         `;
       }).join("");
     }
+
+    // Search live
+    document.addEventListener("input", (e) => {
+      if (e.target && e.target.id === "historySearch") renderHistory();
+    });
 
     // délégation d’évènements pour les boutons de l’historique
     document.addEventListener("click", async (e) => {
@@ -773,6 +937,16 @@
         removeFromHistory(idx);
         showSuccess("✅ Entrée supprimée de l'historique.");
       }
+
+      if (action === "pin") {
+        item.pinned = !item.pinned;
+        items[idx] = item;
+        // tri: épinglés en haut
+        items.sort((x, y) => (y.pinned === x.pinned) ? 0 : (y.pinned ? 1 : -1));
+        saveHistory(items);
+        renderHistory();
+        showSuccess(item.pinned ? "✅ Entrée épinglée." : "✅ Entrée désépinglée.");
+      }
     });
 
     document.getElementById("clearHistoryBtn").addEventListener("click", () => {
@@ -788,14 +962,16 @@
         return [
           it.createdAt,
           it.code,
-          `A=${it.a} ${it.aLabel}`,
-          `B=${it.b} ${it.bLabel}`,
-          `C=${it.c} ${it.cLabel}`,
-          `D=${it.d} ${it.dLabel}`,
-          `E=${it.e} ${it.eLabel}`,
-          `F=${it.f} ${labelF(it.f)}`,
-          `Montant=${it.montant}`,
-          `PME=${it.pme ? "Oui" : "Non"}`,
+          it.count && it.count > 1 ? `x${it.count}` : "",
+          it.pinned ? "PINNED" : "",
+          it.a !== undefined ? `A=${it.a} ${it.aLabel || ""}` : "",
+          it.b !== undefined ? `B=${it.b} ${it.bLabel || ""}` : "",
+          it.c !== undefined ? `C=${it.c} ${it.cLabel || ""}` : "",
+          it.d !== undefined ? `D=${it.d} ${it.dLabel || ""}` : "",
+          it.e !== undefined ? `E=${it.e} ${it.eLabel || ""}` : "",
+          it.f !== undefined ? `F=${it.f} ${labelF(it.f)}` : "",
+          it.montant !== undefined ? `Montant=${it.montant}` : "",
+          it.pme !== undefined ? `PME=${it.pme ? "Oui" : "Non"}` : "",
           it.formRef ? `Ref=${it.formRef}` : "",
           it.formIntitule ? `Projet=${it.formIntitule}` : ""
         ].filter(Boolean).join(" | ");
@@ -810,6 +986,93 @@
       a.click();
       a.remove();
       URL.revokeObjectURL(url);
+    });
+
+    // ---------- Import ----------
+    const importBackdrop = document.getElementById("importBackdrop");
+    const importText = document.getElementById("importText");
+
+    function openImport() {
+      importText.value = "";
+      importBackdrop.style.display = "flex";
+      importText.focus();
+    }
+    function closeImport() {
+      importBackdrop.style.display = "none";
+    }
+
+    document.getElementById("importBtn").addEventListener("click", openImport);
+    document.getElementById("importCancel").addEventListener("click", closeImport);
+    importBackdrop.addEventListener("click", (e) => {
+      if (e.target === importBackdrop) closeImport();
+    });
+
+    function parseImportedLines(raw) {
+      const lines = raw
+        .split(/\r?\n/)
+        .map(l => l.trim())
+        .filter(l => l.length > 0);
+
+      return lines.map(l => {
+        // si la ligne ressemble à un code Carnot, on normalise "CT 123456"
+        const m = l.match(/^(ct)\s*([0-9]{6})$/i) || l.match(/^(ct)\s*([0-9]{1,})$/i);
+        const code = m ? `CT ${m[2]}` : l;
+        return code;
+      });
+    }
+
+    document.getElementById("importConfirm").addEventListener("click", () => {
+      const raw = importText.value || "";
+      const codes = parseImportedLines(raw);
+
+      if (!codes.length) {
+        showError("❌ Rien à importer.");
+        return;
+      }
+
+      const now = formatDateISO(new Date());
+
+      // on ajoute chaque entrée : dédup automatique regroupe les identiques
+      codes.forEach(code => {
+        addToHistory({
+          code,
+          createdAt: now
+        });
+      });
+
+      closeImport();
+      showSuccess(`✅ Import terminé : ${codes.length} ligne(s) importée(s) (doublons regroupés).`);
+    });
+
+    // ---------- Impression / PDF ----------
+    function renderPrintBlock(entry) {
+      const lines = [];
+      lines.push(`<div style="font-size:18px; font-weight:900; color:#c4165a; font-family:Monaco, monospace;">${entry.code}</div>`);
+      if (entry.formRef) lines.push(`<div style="margin-top:8px;"><strong>Référence :</strong> ${escapeHtml(entry.formRef)}</div>`);
+      if (entry.formIntitule) lines.push(`<div><strong>Projet :</strong> ${escapeHtml(entry.formIntitule)}</div>`);
+      lines.push(`<div style="margin-top:8px; color:#333;"><strong>A–F :</strong> ${entry.a ?? ""}${entry.b ?? ""}${entry.c ?? ""}${entry.d ?? ""}${entry.e ?? ""}${entry.f ?? ""}</div>`);
+      if (entry.montant !== undefined) lines.push(`<div><strong>Montant :</strong> ${entry.montant} €</div>`);
+      if (entry.pme !== undefined) lines.push(`<div><strong>PME :</strong> ${entry.pme ? "Oui" : "Non"}</div>`);
+      lines.push(`<div style="margin-top:10px; font-size:12px; color:#666;">${escapeHtml(entry.createdAt || "")}</div>`);
+      return lines.join("");
+    }
+
+    function escapeHtml(s) {
+      return (s || "").replace(/[&<>"']/g, (c) => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+      }[c]));
+    }
+
+    document.getElementById("printBtn").addEventListener("click", () => {
+      const items = loadHistory();
+      const it = items[0];
+      if (!it) {
+        showError("❌ Rien à imprimer. Génère un code d'abord.");
+        return;
+      }
+      document.getElementById("printBlock").innerHTML = renderPrintBlock(it);
+      document.getElementById("printDate").textContent = formatDateISO(new Date());
+      window.print();
     });
 
     // ---------- Génération ----------
@@ -839,7 +1102,7 @@
       document.getElementById('codeBox').style.display = 'block';
       showSuccess(`✅ <strong>Code généré :</strong> <strong>${code}</strong>`);
 
-      // ✅ Décomposition
+      // Décomposition
       const decompList = document.getElementById("decompList");
       const decompBox = document.getElementById("decompBox");
 
@@ -859,7 +1122,7 @@
       `;
       decompBox.style.display = "block";
 
-      // ✅ Historique (persistant)
+      // Historique (persistant) + dédup
       addToHistory({
         code,
         createdAt: formatDateISO(new Date()),
